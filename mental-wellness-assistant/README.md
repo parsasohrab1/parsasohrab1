@@ -40,22 +40,26 @@ src/
     comfortContent.ts          اسکریپت تنفس + جوک‌های ملایم (فقط کمک ثانویه در بحران)
     musicCatalog.ts / demoTone.ts   کاتالوگ موسیقی ساختگی (باکلام/بی‌کلام × ایرانی/خارجی) + یک تُن نمایشی واقعی
     supplementTips.ts          توصیه‌های سبک زندگی عمومی (نه نسخهٔ پزشکی)
+    cuisines.ts / recipeCatalog.ts   کاتالوگ ۱۲ آشپزی دنیا و رسپی‌های گام‌به‌گام (نگاه پایین)
   engine/
     screeningEngine.ts         انتخاب تطبیقی سؤال بعدی + امتیازدهی نهایی
     crisisDetector.ts          تشخیص ریسک از روی مقیاس ایمنی + کلیدواژه‌های متن آزاد
     moodMusicEngine.ts         نگاشت نتیجهٔ غربالگری/حال‌وهوا به یک پلی‌لیست
     musicSearchEngine.ts       جستجو/دسته‌بندی/رتبه‌بندی موسیقی بر اساس علایق کاربر (نگاه پایین)
+    recipeEngine.ts             جستجوی رسپی + پیمایش مرحله‌به‌مرحله + تشخیص دستور صوتی کاربر
   voice/voiceService.ts        انتزاع صدا: TTS با expo-speech (iOS/Android/Web)،
                                 STT با Web Speech API فقط در مرورگرهای پشتیبان؛ در غیر این صورت
                                 به‌صورت خودکار به تایپ سوییچ می‌کند (هرگز صدا اجباری نیست)
   state/
     SessionContext.tsx         وضعیت گفتگوی غربالگری (React Context)
     useFavoriteMusic.ts         علایق موسیقایی کاربر، ذخیره‌شده روی دستگاه (AsyncStorage)
+    CookingContext.tsx          وضعیت جلسهٔ آشپزی (رسپی انتخاب‌شده، مرحلهٔ فعلی، دستور بعدی/تکرار/قبلی/توقف)
   navigation/RootNavigator.tsx  استک ناوبری (React Navigation)
-  screens/                     Welcome, Screening, Results, Crisis, Music, FavoriteMusic, Settings
-  components/                  ChatBubble, MicButton, ProbabilityBar, TrackCard, Disclaimer
+  screens/                     Welcome, Screening, Results, Crisis, Music, FavoriteMusic,
+                                Recipes, Cooking, Settings
+  components/                  ChatBubble, MicButton, ProbabilityBar, TrackCard, RecipeCard, Disclaimer
 scripts/generateSyntheticData.ts   تولیدکنندهٔ کاربر ساختگی + اجرای موتور امتیازدهی، چاپ در کنسول
-__tests__/                    تست‌های موتور غربالگری و تشخیص بحران (Jest)
+__tests__/                    تست‌های موتورهای غربالگری، تشخیص بحران، موسیقی و رسپی (Jest)
 ```
 
 ### جریان گفتگو (Screening flow)
@@ -88,6 +92,25 @@ __tests__/                    تست‌های موتور غربالگری و ت�
 به یک ارائه‌دهندهٔ نمایشی (`remoteInternetProvider`) وصل است که خطای صریح می‌دهد، نه این‌که وانمود کند
 واقعاً در اینترنت جستجو کرده. برای اتصال واقعی، یک پیاده‌سازی واقعی پشت همین اینترفیس در
 `src/engine/musicSearchEngine.ts` بنویسید — بقیهٔ اپ بدون تغییر کار می‌کند.
+
+### راهنمای صوتی آشپزی (`RecipeScreen` + `CookingScreen`)
+
+کاربر یک غذا را از بین ۱۲ آشپزی (ایرانی، فرانسوی، ایتالیایی، آمریکایی، چینی، فنلاندی، تایوانی،
+مکزیکی، ژاپنی، هندی، تایلندی، مدیترانه‌ای — `src/data/cuisines.ts` و `recipeCatalog.ts`) انتخاب
+می‌کند و دستیار او را **مرحله‌به‌مرحله و با صدا** راهنمایی می‌کند:
+
+1. با شروع پخت، دستیار مرحلهٔ اول را با صدا می‌خواند (و در صورت نبود صدا، به‌صورت نوشتاری هم نشان
+   می‌دهد — دقیقاً مثل بقیهٔ اپ، صدا هرگز اجباری نیست).
+2. کاربر با صدا یا تایپ می‌گوید «بعدی» / «انجام دادم» تا مرحلهٔ بعد خوانده شود، «تکرار کن» تا همان
+   مرحله دوباره گفته شود، «قبلی» تا برگردد، یا «تمام کن» تا آشپزی را متوقف کند —
+   `engine/recipeEngine.ts#matchStepCommand` این عبارت‌ها را (فارسی و انگلیسی) تشخیص می‌دهد و
+   `state/CookingContext.tsx` وضعیت مرحلهٔ فعلی را همان‌طور پیش می‌برد.
+3. با پایان آخرین مرحله، دستیار «نوش جان!» می‌گوید و کاربر می‌تواند به فهرست رسپی‌ها برگردد.
+
+⚠️ **محدودیت مهم**: پایگاه‌دادهٔ رسپی یک **نمونهٔ اولیهٔ ۱۲ موردی و قابل‌گسترش** است، نه یک بانک
+اطلاعاتی واقعی و نامحدود از «تمام غذاهای دنیا» — چنین چیزی نیازمند یک سرویس/دیتابیس رسپی واقعی
+(مثل Spoonacular یا Edamam) است. طراحی `recipeEngine.ts` عمداً ساده نگه داشته شده تا افزودن رسپی
+بیشتر، یا وصل‌کردن یک سرویس واقعی پشت همان تابع `searchRecipes`، بدون تغییر در صفحات اپ ممکن باشد.
 
 ## اجرا
 

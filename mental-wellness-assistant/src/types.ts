@@ -166,3 +166,52 @@ export interface VoiceService {
   listen: () => Promise<string>;
   stopListening: () => void;
 }
+
+/**
+ * Recipe / cooking-guide domain. The catalog in src/data/recipeCatalog.ts
+ * is a seed set spanning several world cuisines, not an exhaustive
+ * database of "every dish in the world" — see recipeCatalog.ts for the
+ * honest scope note and the extension point for a real recipe API.
+ */
+export type CuisineId =
+  | "iranian"
+  | "french"
+  | "italian"
+  | "american"
+  | "chinese"
+  | "finnish"
+  | "taiwanese"
+  | "mexican"
+  | "japanese"
+  | "indian"
+  | "thai"
+  | "mediterranean";
+
+export interface Cuisine {
+  id: CuisineId;
+  name: { fa: string; en: string };
+}
+
+export interface RecipeStep {
+  index: number;
+  instruction: { fa: string; en: string };
+}
+
+export interface Recipe {
+  id: string;
+  cuisineId: CuisineId;
+  title: { fa: string; en: string };
+  description: { fa: string; en: string };
+  servings: number;
+  totalTimeMinutes: number;
+  ingredients: { fa: string; en: string }[];
+  steps: RecipeStep[];
+}
+
+export interface RecipeSearchQuery {
+  text?: string;
+  cuisineId?: CuisineId;
+}
+
+/** What the cooking assistant understood from a step-advance utterance. */
+export type StepCommand = "next" | "repeat" | "previous" | "stop" | "unknown";

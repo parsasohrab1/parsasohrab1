@@ -7,6 +7,8 @@ import ResultsScreen from "@/screens/ResultsScreen";
 import CrisisScreen from "@/screens/CrisisScreen";
 import MusicScreen from "@/screens/MusicScreen";
 import FavoriteMusicScreen from "@/screens/FavoriteMusicScreen";
+import RecipeScreen from "@/screens/RecipeScreen";
+import CookingScreen from "@/screens/CookingScreen";
 import SettingsScreen from "@/screens/SettingsScreen";
 
 export type RootStackParamList = {
@@ -16,6 +18,8 @@ export type RootStackParamList = {
   Crisis: undefined;
   Music: undefined;
   FavoriteMusic: undefined;
+  Recipes: undefined;
+  Cooking: undefined;
   Settings: undefined;
 };
 
@@ -45,6 +49,12 @@ export default function RootNavigator() {
           name="FavoriteMusic"
           component={FavoriteMusicScreen}
           options={{ title: "موسیقی مورد علاقه" }}
+        />
+        <Stack.Screen name="Recipes" component={RecipeScreen} options={{ title: "رسپی‌های جهانی" }} />
+        <Stack.Screen
+          name="Cooking"
+          component={CookingScreen}
+          options={{ title: "راهنمای گام‌به‌گام پخت" }}
         />
         <Stack.Screen name="Settings" component={SettingsScreen} options={{ title: "تنظیمات" }} />
       </Stack.Navigator>

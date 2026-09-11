@@ -744,3 +744,40 @@ export interface FamilyMember {
   traits: PersonalityTrait[];
   notes: string | null;
 }
+
+/**
+ * Personal-tasks domain: voice/typed commands like "email Mom saying
+ * I'll be late" resolved against a small local address book, then
+ * turned into a native mail/SMS/phone/WhatsApp action. IMPORTANT SCOPE
+ * NOTE: every action only OPENS the relevant native app pre-filled —
+ * it never sends an email, sends a text, places a call, or posts
+ * anything by itself. The user's own final tap inside that other app
+ * is always required; this is not a technical limitation to work
+ * around but a deliberate safety boundary (silent, unconfirmed sending
+ * is how spam/harassment tools work). There is also no real access to
+ * the user's actual email account, SMS thread history, call log, or
+ * phone contacts — only what the user explicitly saves here, on this
+ * device. And there is no generic "connect to any app" capability:
+ * only apps with a public URL scheme (mailto:, sms:, tel:, wa.me) can
+ * be opened this way. See DISCLAIMERS.personalTasksLimitations and
+ * engine/personalTaskEngine.ts's documented real-automation stub.
+ */
+export type PersonalTaskAction = "email" | "sms" | "call" | "whatsapp";
+
+export interface QuickContact {
+  id: string;
+  name: string;
+  phone: string | null;
+  email: string | null;
+}
+
+export interface PersonalTaskIntent {
+  /** null when the free-text parser couldn't detect an action — the
+   *  screen then falls back to asking the user to pick one via chips. */
+  action: PersonalTaskAction | null;
+  contactName: string | null;
+  message: string | null;
+  subject: string | null;
+}
+
+export type PersonalTaskMissingInfo = "contact" | "phone" | "email" | "message";

@@ -41,16 +41,36 @@ const MOOD_LABEL: Record<Mood, { fa: string; en: string }> = {
   calm: { fa: "آرام", en: "Calm" },
 };
 
-type NoParamRoute = { [K in keyof RootStackParamList]: RootStackParamList[K] extends undefined ? K : never }[keyof RootStackParamList];
-
-const SUGGESTION_TARGET: Record<CompanionSuggestion["kind"], NoParamRoute> = {
-  music: "Music",
-  favorite_music: "FavoriteMusic",
-  screening: "Screening",
-  fitness: "Fitness",
-  counseling: "Counseling",
-  recipes: "Recipes",
-  storytelling: "Storytelling",
+/** Explicit per-kind navigation, rather than a dynamic
+ *  `navigation.navigate(SOME_VARIABLE)` — with 30+ routes in
+ *  RootStackParamList (several with non-undefined params),
+ *  React Navigation's overload resolution for a generic union
+ *  screen-name argument becomes unreliable, so each suggestion kind
+ *  is spelled out as its own literal call instead. */
+const navigateToSuggestion = (navigation: Props["navigation"], kind: CompanionSuggestion["kind"]) => {
+  switch (kind) {
+    case "music":
+      navigation.navigate("Music");
+      return;
+    case "favorite_music":
+      navigation.navigate("FavoriteMusic");
+      return;
+    case "screening":
+      navigation.navigate("Screening");
+      return;
+    case "fitness":
+      navigation.navigate("Fitness");
+      return;
+    case "counseling":
+      navigation.navigate("Counseling");
+      return;
+    case "recipes":
+      navigation.navigate("Recipes");
+      return;
+    case "storytelling":
+      navigation.navigate("Storytelling");
+      return;
+  }
 };
 
 export default function CompanionScreen({ navigation }: Props) {
@@ -105,7 +125,7 @@ export default function CompanionScreen({ navigation }: Props) {
     if (s.kind === "screening") {
       startSession("quick");
     }
-    navigation.navigate(SUGGESTION_TARGET[s.kind]);
+    navigateToSuggestion(navigation, s.kind);
   };
 
   const sendJournalEntry = () => {

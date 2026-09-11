@@ -42,7 +42,8 @@ import { identifyByText, localPlaceholderLyricsProvider } from "../src/engine/so
 import { personalityInsight, recommendStrategies } from "../src/engine/socialAdvisorEngine";
 import { recommendGiftIdeas } from "../src/engine/giftAdvisorEngine";
 import { groupByRelation, summarizeMember } from "../src/engine/familyCircleEngine";
-import { FamilyMember } from "../src/types";
+import { buildActionUrl, missingInfoFor, parseIntent, resolveContact } from "../src/engine/personalTaskEngine";
+import { FamilyMember, QuickContact } from "../src/types";
 import {
   ChildAgeRange,
   ChildGender,
@@ -474,6 +475,33 @@ async function main() {
   console.log(`\n  Grouped by relation: ${Object.keys(grouped).join(", ")}`);
   console.log(
     "  NOTE: saved so the user can later pick 'Mom' in the social advisor without re-entering her relation/traits — see DISCLAIMERS.familyCircleLimitations."
+  );
+
+  console.log("\n" + "=".repeat(70));
+  console.log("Synthetic personal-tasks demo (command text -> parsed intent -> composer URL, never auto-sent):");
+
+  const syntheticContacts: QuickContact[] = [
+    { id: "qc_1", name: "مامان", phone: "+15551230000", email: null },
+    { id: "qc_2", name: "Ali", phone: null, email: "ali@example.com" },
+  ];
+  const syntheticCommands = ["به مامان پیامک بده بگو دیر میام", "send an email to Ali saying the report is ready"];
+  for (const command of syntheticCommands) {
+    const intent = parseIntent(command);
+    const contact = resolveContact(intent.contactName, syntheticContacts);
+    console.log(`\n  Command: "${command}"`);
+    console.log(`    Parsed: action=${intent.action}, contact=${contact?.name ?? "none"}, message="${intent.message}"`);
+    if (contact) {
+      const missing = missingInfoFor(intent, contact);
+      if (missing.length > 0) {
+        console.log(`    Missing info before this can proceed: ${missing.join(", ")}`);
+      } else if (intent.action && intent.action !== "call") {
+        const url = buildActionUrl(intent.action, contact, intent.message, intent.subject);
+        console.log(`    Would open (never auto-send): ${url}`);
+      }
+    }
+  }
+  console.log(
+    "  NOTE: every action above only builds a URL to open the native composer — nothing is ever sent automatically. See DISCLAIMERS.personalTasksLimitations."
   );
 
   console.log("\n" + "=".repeat(70));

@@ -51,6 +51,9 @@ export default function WelcomeScreen({ navigation }: Props) {
       <Pressable style={styles.textLink} onPress={() => navigation.navigate("Fitness")}>
         <Text style={styles.textLinkText}>راهنمای تغذیه و تناسب اندام (بر اساس BMI) ↗</Text>
       </Pressable>
+      <Pressable style={styles.textLink} onPress={() => navigation.navigate("ActiveListening")}>
+        <Text style={styles.textLinkText}>گوش فعال (تشخیص وضعیت اورژانسی از روی گفتار) ↗</Text>
+      </Pressable>
       <Pressable style={styles.textLink} onPress={() => navigation.navigate("Settings")}>
         <Text style={styles.textLinkText}>تنظیمات زبان و صدا ↗</Text>
       </Pressable>

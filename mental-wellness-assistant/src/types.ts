@@ -389,3 +389,52 @@ export interface FitnessResult {
   nutritionStrategies: FitnessStrategy[];
   exerciseStrategies: FitnessStrategy[];
 }
+
+/**
+ * "Active listening" domain — an opt-in, foreground-only feature.
+ *
+ * NOTE ON SCOPE (read before touching this code): this is a keyword scan
+ * over TRANSCRIBED SPEECH (via voiceService's existing speech-to-text),
+ * not an acoustic classifier — it cannot hear a physical fight, a fire's
+ * crackle, or a scream as a *sound*; it only reacts when someone's words
+ * are picked up by STT and contain a matching phrase. It only runs while
+ * ActiveListeningScreen is open and in the foreground — there is no
+ * background/always-on listening in this scaffold, which would require
+ * ejecting from the Expo managed workflow for a native background-audio
+ * service. It NEVER calls emergency services or sends a message on its
+ * own; every action opens the system dialer or SMS composer prefilled,
+ * and still requires the user's own tap to actually go through. See
+ * DISCLAIMERS.activeListeningLimitations, always rendered on this screen.
+ */
+export type EmergencyCategory = "police" | "fire" | "medical" | "duress";
+
+export interface EmergencyDetection {
+  category: EmergencyCategory;
+  matchedPhrase: string;
+  transcript: string;
+  detectedAt: string;
+}
+
+/** Real emergency-service numbers — "duress" has none; that path messages
+ *  a trusted contact instead (see TrustedContact). */
+export interface EmergencyContact {
+  category: Exclude<EmergencyCategory, "duress">;
+  label: { fa: string; en: string };
+  phone: string;
+}
+
+/** A close, trusted person the user can ask this feature to message —
+ *  captured once via a short Q&A, persisted on-device only. */
+export interface TrustedContact {
+  name: string;
+  phone: string;
+}
+
+export interface LocationInfo {
+  latitude: number;
+  longitude: number;
+  /** Reverse-geocoded address, when available (native platforms only;
+   *  null on web or if reverse geocoding fails — coordinates still work
+   *  everywhere as a fallback). */
+  address: string | null;
+}

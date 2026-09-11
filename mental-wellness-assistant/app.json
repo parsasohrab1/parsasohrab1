@@ -16,12 +16,13 @@
       "bundleIdentifier": "com.example.mindcompanion",
       "infoPlist": {
         "NSMicrophoneUsageDescription": "برای گفتگوی صوتی با دستیار، به میکروفون دسترسی نیاز است. در هر لحظه می‌توانید به‌جای صحبت کردن، تایپ کنید.",
-        "NSSpeechRecognitionUsageDescription": "برای تبدیل گفتار شما به متن و پاسخ‌گویی، به تشخیص گفتار نیاز است."
+        "NSSpeechRecognitionUsageDescription": "برای تبدیل گفتار شما به متن و پاسخ‌گویی، به تشخیص گفتار نیاز است.",
+        "NSLocationWhenInUseUsageDescription": "برای خواندن آدرس تقریبی شما هنگام یک وضعیت اورژانسی در حالت «گوش فعال»، به موقعیت مکانی نیاز است."
       }
     },
     "android": {
       "package": "com.example.mindcompanion",
-      "permissions": ["RECORD_AUDIO"],
+      "permissions": ["RECORD_AUDIO", "ACCESS_COARSE_LOCATION", "ACCESS_FINE_LOCATION"],
       "adaptiveIcon": {
         "backgroundColor": "#0f172a"
       }

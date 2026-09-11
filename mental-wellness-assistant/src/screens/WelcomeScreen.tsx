@@ -72,6 +72,9 @@ export default function WelcomeScreen({ navigation }: Props) {
       <Pressable style={styles.textLink} onPress={() => navigation.navigate("SocialAdvisor")}>
         <Text style={styles.textLinkText}>راهنمایی برای موقعیت‌های اجتماعی و خانوادگی ↗</Text>
       </Pressable>
+      <Pressable style={styles.textLink} onPress={() => navigation.navigate("GiftAdvisor")}>
+        <Text style={styles.textLinkText}>نمی‌دونم چه هدیه‌ای بخرم، کمکم کن ↗</Text>
+      </Pressable>
       <Pressable style={styles.textLink} onPress={() => navigation.navigate("Settings")}>
         <Text style={styles.textLinkText}>تنظیمات زبان و صدا ↗</Text>
       </Pressable>

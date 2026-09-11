@@ -40,6 +40,7 @@ import { inferMindset, milestonesForPath, progressSummary, recommendPaths } from
 import { MINDSET_QUESTIONS, PATH_LABEL } from "../src/data/careerStrategies";
 import { identifyByText, localPlaceholderLyricsProvider } from "../src/engine/songIdEngine";
 import { personalityInsight, recommendStrategies } from "../src/engine/socialAdvisorEngine";
+import { recommendGiftIdeas } from "../src/engine/giftAdvisorEngine";
 import {
   ChildAgeRange,
   ChildGender,
@@ -436,6 +437,25 @@ async function main() {
   console.log(`  Personality insight: ${insight}`);
   const socialResults = recommendStrategies(socialProfile);
   console.log(`  Top strategy: ${socialResults[0].strategy.advice.en}`);
+
+  console.log("\n" + "=".repeat(70));
+  console.log("Synthetic gift-advisor demo (relation + age + occasion + budget + interests -> ideas):");
+
+  const giftProfile = {
+    relation: "mother" as const,
+    ageGroup: "senior" as const,
+    occasion: "birthday" as const,
+    budget: "medium" as const,
+    interests: ["gardening" as const, "reading" as const],
+  };
+  console.log(`\n  Recipient: ${giftProfile.relation}, ${giftProfile.ageGroup}, occasion=${giftProfile.occasion}, budget=${giftProfile.budget}`);
+  const giftResults = recommendGiftIdeas(giftProfile);
+  for (const { idea } of giftResults) {
+    console.log(`    ${idea.isBookSuggestion ? "[book genre] " : ""}${idea.idea.en}`);
+  }
+  console.log(
+    "  NOTE: no real product catalog or prices — every idea is fictional, and book suggestions name a genre, never a specific real title. See DISCLAIMERS.giftAdvisorLimitations."
+  );
 
   console.log("\n" + "=".repeat(70));
   console.log("Done. This is synthetic/demo data only — no real user data exists in this repo.");

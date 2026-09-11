@@ -676,3 +676,51 @@ export interface SocialStrategy {
   personalityNote: { fa: string; en: string };
   advice: { fa: string; en: string };
 }
+
+/**
+ * Gift-recommendation domain. Synthetic, hand-written gift ideas only
+ * — no real e-commerce/product data or prices, and book "suggestions"
+ * are genre/topic categories to look for, never a specific real title
+ * asserted as authoritative (to avoid copyright/accuracy overreach —
+ * this app has no live catalog of real books). See
+ * DISCLAIMERS.giftAdvisorLimitations.
+ */
+export type GiftRecipientRelation = "mother" | "father" | "sibling" | "spouse" | "partner" | "friend" | "coworker" | "child" | "other";
+
+export type GiftAgeGroup = "child" | "teen" | "adult" | "senior";
+
+export type GiftOccasion = "birthday" | "wedding" | "anniversary" | "graduation" | "holiday" | "housewarming" | "just_because" | "condolence";
+
+export type GiftBudget = "low" | "medium" | "high";
+
+export type GiftInterest =
+  | "reading"
+  | "cooking"
+  | "sports"
+  | "music"
+  | "art"
+  | "technology"
+  | "travel"
+  | "fashion"
+  | "home_decor"
+  | "gardening"
+  | "gaming"
+  | "wellness";
+
+export interface GiftProfile {
+  relation: GiftRecipientRelation;
+  ageGroup: GiftAgeGroup;
+  occasion: GiftOccasion;
+  budget: GiftBudget;
+  interests: GiftInterest[];
+}
+
+export interface GiftIdea {
+  id: string;
+  interests: GiftInterest[];
+  occasions: GiftOccasion[];
+  budgets: GiftBudget[];
+  ageGroups: GiftAgeGroup[];
+  idea: { fa: string; en: string };
+  isBookSuggestion?: boolean;
+}

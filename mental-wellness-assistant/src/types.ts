@@ -338,3 +338,54 @@ export interface CounselingResult {
   recommendedStrategies: RelationshipStrategy[];
   safety: RelationshipSafetyAssessment;
 }
+
+/**
+ * Fitness/nutrition guidance domain. NOTE ON SCOPE: BMI is a rough,
+ * widely-used screening indicator — it does not account for muscle
+ * mass, bone density, or individual health history, and is especially
+ * unreliable for muscular athletes. This flow gives general,
+ * non-clinical suggestions, never an individualized medical, dietetic,
+ * or training plan — see DISCLAIMERS.fitnessNotSubstitute.
+ */
+export type AthleteStatus = "athlete" | "non_athlete";
+export type ExercisePurpose = "health_fitness" | "professional_sport";
+export type WeightGoal = "lose" | "gain" | "maintain";
+export type BmiCategory = "underweight" | "normal" | "overweight" | "obese";
+
+export interface FitnessProfile {
+  athleteStatus: AthleteStatus | null;
+  exercisePurpose: ExercisePurpose | null;
+  weightGoal: WeightGoal | null;
+  heightCm: number | null;
+  weightKg: number | null;
+}
+
+export type FitnessAdviceType = "nutrition" | "exercise";
+
+export interface FitnessStrategy {
+  id: string;
+  type: FitnessAdviceType;
+  bmiCategories: BmiCategory[];
+  weightGoals?: WeightGoal[];
+  /** Restricts to athletes or non-athletes; omit for both. */
+  athleteStatus?: AthleteStatus[];
+  exercisePurposes?: ExercisePurpose[];
+  source: { fa: string; en: string };
+  advice: { fa: string; en: string };
+}
+
+export interface FitnessResult {
+  sessionId: string;
+  completedAt: string;
+  bmi: number;
+  bmiCategory: BmiCategory;
+  /** True for a muscular-athlete profile where BMI is a poor proxy for
+   *  body composition — surfaced as a caveat, not hidden. */
+  bmiLikelyUnreliable: boolean;
+  /** Set when the stated weight goal runs counter to the BMI reading in
+   *  a way worth a gentle caution (e.g. already underweight and wanting
+   *  to lose more) — never blocks the result, just flags it. */
+  cautionNote: { fa: string; en: string } | null;
+  nutritionStrategies: FitnessStrategy[];
+  exerciseStrategies: FitnessStrategy[];
+}

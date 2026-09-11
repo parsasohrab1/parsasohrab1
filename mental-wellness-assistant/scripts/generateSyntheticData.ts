@@ -27,7 +27,15 @@ import {
   scoreCounselingSession,
 } from "../src/engine/counselingEngine";
 import { counselingQuestionById } from "../src/data/counselingQuestions";
-import { ChildAgeRange, ChildGender, CounselingAnswer, FavoriteMusicProfile, MaritalStatus } from "../src/types";
+import { scoreFitnessSession } from "../src/engine/fitnessEngine";
+import {
+  ChildAgeRange,
+  ChildGender,
+  CounselingAnswer,
+  FavoriteMusicProfile,
+  FitnessProfile,
+  MaritalStatus,
+} from "../src/types";
 
 const NUM_SYNTHETIC_USERS = 8;
 const MODE: ScreeningMode = "full";
@@ -268,6 +276,29 @@ function main() {
     if (story) {
       console.log(`    First story: "${renderTitle(story, "en", name)}"`);
       console.log(`    Paragraph 1: ${renderParagraph(story, 1, "en", name)}`);
+    }
+  }
+
+  console.log("\n" + "=".repeat(70));
+  console.log("Synthetic fitness/BMI demo (profile asked -> BMI computed -> nutrition + exercise tips):");
+
+  const syntheticFitnessProfiles: (FitnessProfile & { label: string })[] = [
+    { label: "non_athlete_overweight_lose", athleteStatus: "non_athlete", exercisePurpose: "health_fitness", weightGoal: "lose", heightCm: 170, weightKg: 88 },
+    { label: "athlete_muscular_normal_goal", athleteStatus: "athlete", exercisePurpose: "professional_sport", weightGoal: "maintain", heightCm: 180, weightKg: 95 },
+    { label: "underweight_wants_to_lose_more", athleteStatus: "non_athlete", exercisePurpose: "health_fitness", weightGoal: "lose", heightCm: 168, weightKg: 45 },
+  ];
+
+  for (const { label, ...profile } of syntheticFitnessProfiles) {
+    const result = scoreFitnessSession(label, profile);
+    if (!result) continue;
+    console.log(`\n  Client: ${label}`);
+    console.log(`    BMI: ${result.bmi} (${result.bmiCategory})${result.bmiLikelyUnreliable ? " — flagged as likely unreliable (athlete)" : ""}`);
+    if (result.cautionNote) {
+      console.log(`    ⚠️  CAUTION: ${result.cautionNote.en}`);
+    }
+    console.log(`    Nutrition tips: ${result.nutritionStrategies.length}, Exercise tips: ${result.exerciseStrategies.length}`);
+    for (const s of [...result.nutritionStrategies, ...result.exerciseStrategies].slice(0, 3)) {
+      console.log(`      - ${s.advice.en}`);
     }
   }
 

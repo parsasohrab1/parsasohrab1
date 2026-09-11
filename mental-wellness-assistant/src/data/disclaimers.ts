@@ -33,4 +33,8 @@ export const DISCLAIMERS = {
     fa: "اگر رابطه‌تان شامل تهدید، کنترل شدید یا خشونت است، این دستیار جایگزین کمک حرفه‌ای یا حقوقی نیست. لطفاً با یک مشاور دارای مجوز، مرکز حمایت از زنان یا خانواده، یا در خطر فوری، با اورژانس تماس بگیرید.",
     en: "If your relationship involves threats, severe control, or violence, this assistant cannot replace professional or legal help. Please reach out to a licensed counselor, a domestic-violence/family support service, or emergency services if you're in immediate danger.",
   },
+  fitnessNotSubstitute: {
+    fa: "شاخص تودهٔ بدنی (BMI) فقط یک شاخص کلی و تقریبی است؛ میزان عضله، تراکم استخوان یا شرایط پزشکی خاص را در نظر نمی‌گیرد و به‌خصوص برای ورزشکاران عضلانی می‌تواند گمراه‌کننده باشد. توصیه‌های تغذیه و ورزش اینجا کلی و آموزشی‌اند، نه یک برنامهٔ غذایی یا تمرینی اختصاصی. پیش از هر تغییر جدی در وزن، تغذیه یا فعالیت بدنی — به‌خصوص اگر بیماری زمینه‌ای، بارداری یا سابقهٔ اختلال خوردن دارید — با پزشک، متخصص تغذیه، یا مربی ورزشی دارای مجوز مشورت کنید.",
+    en: "Body Mass Index (BMI) is only a rough general indicator — it doesn't account for muscle mass, bone density, or specific medical conditions, and can be especially misleading for muscular athletes. The nutrition and exercise suggestions here are general and educational, not a personalized meal or training plan. Before any major change to your weight, diet, or physical activity — especially if you have an underlying condition, are pregnant, or have a history of an eating disorder — consult a physician, registered dietitian, or certified trainer.",
+  },
 } as const;

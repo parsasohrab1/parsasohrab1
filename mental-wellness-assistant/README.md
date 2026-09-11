@@ -47,6 +47,7 @@ src/
     storyCatalog.ts             ۸ قصهٔ کاملاً اورجینال برای ۴ ردهٔ سنی (نگاه پایین)
     counselingQuestions.ts       بانک سؤال مشاورهٔ زناشویی/روابط (نگاه پایین)
     relationshipStrategies.ts    ۱۹ راهکار: خلاصهٔ اورجینال از رویکردهای شناخته‌شدهٔ روان‌شناسی + ضرب‌المثل‌های فارسی
+    fitnessStrategies.ts         ۱۹ راهکار تغذیه/ورزش، برچسب‌خورده با دستهٔ BMI، هدف وزنی، ورزشکار/غیرورزشکار و نوع ورزش (نگاه پایین)
   engine/
     screeningEngine.ts         انتخاب تطبیقی سؤال بعدی + امتیازدهی نهایی
     crisisDetector.ts          تشخیص ریسک از روی مقیاس ایمنی + کلیدواژه‌های متن آزاد
@@ -56,6 +57,7 @@ src/
     storytellingEngine.ts       انتخاب قصه بر اساس سن + تشخیص سن/جنسیت/سبک از متن آزاد + جایگزینی نام قهرمان
     voiceCommands.ts            تشخیص دستور صوتی مشترک («بعدی»/«تکرار کن»/«قبلی»/«تمام کن»؛ آشپزی و قصه هر دو از آن استفاده می‌کنند)
     counselingEngine.ts         انتخاب تطبیقی سؤال + امتیازدهی موضوعی + پیشنهاد راهکار + دروازهٔ ایمنی رابطه (نگاه پایین)
+    fitnessEngine.ts             محاسبهٔ BMI + دسته‌بندی + تشخیص قد/وزن از متن آزاد + پیشنهاد راهکار (نگاه پایین)
   voice/voiceService.ts        انتزاع صدا: TTS با expo-speech (iOS/Android/Web)،
                                 STT با Web Speech API فقط در مرورگرهای پشتیبان؛ در غیر این صورت
                                 به‌صورت خودکار به تایپ سوییچ می‌کند (هرگز صدا اجباری نیست)؛
@@ -66,13 +68,14 @@ src/
     CookingContext.tsx          وضعیت جلسهٔ آشپزی (رسپی انتخاب‌شده، مرحلهٔ فعلی، دستور بعدی/تکرار/قبلی/توقف)
     StoryContext.tsx             وضعیت جلسهٔ قصه‌گویی (سن/جنسیت/سبک، قصهٔ فعلی، بخش فعلی)
     CounselingContext.tsx        وضعیت جلسهٔ مشاوره (پروفایل، پاسخ‌ها، نتیجه، دروازهٔ ایمنی)
+    FitnessContext.tsx           وضعیت جلسهٔ تغذیه/ورزش (پروفایل، قد/وزن، نتیجهٔ BMI)
   navigation/RootNavigator.tsx  استک ناوبری (React Navigation)
   screens/                     Welcome, Screening, Results, Crisis, Music, FavoriteMusic,
                                 Recipes, Cooking, Storytelling, StoryPlayback, Counseling,
-                                CounselingResults, RelationshipSafety, Settings
+                                CounselingResults, RelationshipSafety, Fitness, FitnessResults, Settings
   components/                  ChatBubble, MicButton, ProbabilityBar, TrackCard, RecipeCard, StoryCard, Disclaimer
 scripts/generateSyntheticData.ts   تولیدکنندهٔ کاربر ساختگی + اجرای موتور امتیازدهی، چاپ در کنسول
-__tests__/                    تست‌های موتورهای غربالگری، تشخیص بحران، موسیقی، رسپی، قصه‌گویی و مشاوره (Jest)
+__tests__/                    تست‌های موتورهای غربالگری، تشخیص بحران، موسیقی، رسپی، قصه‌گویی، مشاوره و تناسب اندام (Jest)
 ```
 
 ### جریان گفتگو (Screening flow)

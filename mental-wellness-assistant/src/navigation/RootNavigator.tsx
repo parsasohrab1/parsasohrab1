@@ -14,6 +14,8 @@ import StoryPlaybackScreen from "@/screens/StoryPlaybackScreen";
 import CounselingScreen from "@/screens/CounselingScreen";
 import CounselingResultsScreen from "@/screens/CounselingResultsScreen";
 import RelationshipSafetyScreen from "@/screens/RelationshipSafetyScreen";
+import FitnessScreen from "@/screens/FitnessScreen";
+import FitnessResultsScreen from "@/screens/FitnessResultsScreen";
 import SettingsScreen from "@/screens/SettingsScreen";
 
 export type RootStackParamList = {
@@ -30,6 +32,8 @@ export type RootStackParamList = {
   Counseling: undefined;
   CounselingResults: undefined;
   RelationshipSafety: undefined;
+  Fitness: undefined;
+  FitnessResults: undefined;
   Settings: undefined;
 };
 
@@ -90,6 +94,12 @@ export default function RootNavigator() {
           name="RelationshipSafety"
           component={RelationshipSafetyScreen}
           options={{ title: "ایمنی رابطه", gestureEnabled: false }}
+        />
+        <Stack.Screen name="Fitness" component={FitnessScreen} options={{ title: "تغذیه و تناسب اندام" }} />
+        <Stack.Screen
+          name="FitnessResults"
+          component={FitnessResultsScreen}
+          options={{ title: "نتیجهٔ BMI" }}
         />
         <Stack.Screen name="Settings" component={SettingsScreen} options={{ title: "تنظیمات" }} />
       </Stack.Navigator>

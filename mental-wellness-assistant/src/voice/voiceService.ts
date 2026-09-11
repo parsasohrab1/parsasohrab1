@@ -1,6 +1,6 @@
 import { Platform } from "react-native";
 import * as Speech from "expo-speech";
-import { Locale, VoiceService } from "@/types";
+import { Locale, NarrationStyle, VoiceService } from "@/types";
 
 /**
  * Cross-platform voice abstraction.
@@ -38,6 +38,74 @@ const speak = async (text: string, locale: Locale = "fa"): Promise<void> => {
 
 const stopSpeaking = async (): Promise<void> => {
   await Speech.stop();
+};
+
+/**
+ * Best-effort female-voice picker for the storytelling feature. Neither
+ * expo-speech nor the Web Speech API exposes a reliable cross-platform
+ * "gender" field, so this matches common naming patterns used by iOS,
+ * Android, and browser TTS engines for their female voices (e.g.
+ * "Samantha", "Zira", "Google fa-IR Female"). It's a heuristic, not a
+ * guarantee — some devices only ship one voice per language, in which
+ * case this quietly falls back to whatever is available.
+ */
+const FEMALE_VOICE_NAME_HINTS = [
+  "female",
+  "woman",
+  "samantha",
+  "victoria",
+  "karen",
+  "susan",
+  "moira",
+  "tessa",
+  "fiona",
+  "zira",
+  "salli",
+  "joanna",
+  "kendra",
+  "kimberly",
+  "ava",
+  "allison",
+  "زهرا",
+  "نازنین",
+];
+
+const pickFemaleVoiceId = async (locale: Locale): Promise<string | undefined> => {
+  try {
+    const voices = await Speech.getAvailableVoicesAsync();
+    if (!voices?.length) return undefined;
+    const wantLang = locale === "fa" ? "fa" : "en";
+    const localeVoices = voices.filter((v) => v.language?.toLowerCase().startsWith(wantLang));
+    const pool = localeVoices.length > 0 ? localeVoices : voices;
+    const female = pool.find((v) =>
+      FEMALE_VOICE_NAME_HINTS.some((hint) => v.name?.toLowerCase().includes(hint) || v.identifier?.toLowerCase().includes(hint))
+    );
+    return (female ?? pool[0])?.identifier;
+  } catch {
+    return undefined;
+  }
+};
+
+/**
+ * Narrates a children's story in a female-leaning voice (best effort —
+ * see pickFemaleVoiceId) with one of two paces:
+ *  - "motherly": warmer, slower, slightly higher-pitched
+ *  - "normal": a plain, everyday narration pace
+ */
+const speakStory = async (text: string, locale: Locale, style: NarrationStyle): Promise<void> => {
+  await Speech.stop();
+  const voice = await pickFemaleVoiceId(locale);
+  return new Promise((resolve) => {
+    Speech.speak(text, {
+      language: speechLang(locale),
+      voice,
+      pitch: style === "motherly" ? 1.15 : 1.0,
+      rate: style === "motherly" ? 0.82 : 0.95,
+      onDone: () => resolve(),
+      onStopped: () => resolve(),
+      onError: () => resolve(),
+    });
+  });
 };
 
 type WebSpeechRecognition = {
@@ -103,3 +171,7 @@ export const voiceService: VoiceService = {
   listen,
   stopListening,
 };
+
+/** Not part of the core VoiceService interface (which stays generic) —
+ *  a dedicated export for the storytelling feature's voice/pace needs. */
+export { speakStory };

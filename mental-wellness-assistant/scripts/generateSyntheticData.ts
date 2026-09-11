@@ -15,7 +15,14 @@ import { assessCrisis, textLooksLikeCrisis } from "../src/engine/crisisDetector"
 import { moodFromScreeningResult, getPlaylistForResult } from "../src/engine/moodMusicEngine";
 import { categorizeTracks, recommendForProfile } from "../src/engine/musicSearchEngine";
 import { TRACKS } from "../src/data/musicCatalog";
-import { FavoriteMusicProfile } from "../src/types";
+import {
+  AGE_RANGE_OPTIONS,
+  pickProtagonistName,
+  renderParagraph,
+  renderTitle,
+  storiesForAge,
+} from "../src/engine/storytellingEngine";
+import { ChildAgeRange, ChildGender, FavoriteMusicProfile } from "../src/types";
 
 const NUM_SYNTHETIC_USERS = 8;
 const MODE: ScreeningMode = "full";
@@ -187,6 +194,26 @@ function main() {
     console.log(
       `    Categorized -> vocal+iranian=${categorized.vocalIranian.length}, vocal+foreign=${categorized.vocalForeign.length}, instrumental+iranian=${categorized.instrumentalIranian.length}, instrumental+foreign=${categorized.instrumentalForeign.length}`
     );
+  }
+
+  console.log("\n" + "=".repeat(70));
+  console.log("Synthetic storytelling setup demo (age range asked -> gender asked -> story rendered):");
+  const storySetups: { age: ChildAgeRange; gender: ChildGender }[] = [
+    { age: "2-4", gender: "girl" },
+    { age: "8-10", gender: "boy" },
+    { age: "11-13", gender: "unspecified" },
+  ];
+  for (const setup of storySetups) {
+    const ageLabel = AGE_RANGE_OPTIONS.find((o) => o.value === setup.age)?.label.en ?? setup.age;
+    const name = pickProtagonistName(setup.gender);
+    const matches = storiesForAge(setup.age);
+    const story = matches[0];
+    console.log(`\n  Child: age=${ageLabel} gender=${setup.gender} -> protagonist name "${name}"`);
+    console.log(`    Stories available for this age: ${matches.length}`);
+    if (story) {
+      console.log(`    First story: "${renderTitle(story, "en", name)}"`);
+      console.log(`    Paragraph 1: ${renderParagraph(story, 1, "en", name)}`);
+    }
   }
 
   console.log("\n" + "=".repeat(70));

@@ -215,3 +215,39 @@ export interface RecipeSearchQuery {
 
 /** What the cooking assistant understood from a step-advance utterance. */
 export type StepCommand = "next" | "repeat" | "previous" | "stop" | "unknown";
+
+/**
+ * Children's storytelling domain. The narrator asks the child's age
+ * range and gender first (to pick age-appropriate stories and a
+ * matching protagonist name), then narrates paragraph by paragraph in
+ * one of two voice styles.
+ */
+export type ChildAgeRange = "2-4" | "5-7" | "8-10" | "11-13";
+export type ChildGender = "boy" | "girl" | "unspecified";
+/** "motherly" = warmer, slower, higher-pitched narration; "normal" = a
+ *  plain, everyday narration pace. See voice/voiceService.ts#speakStory. */
+export type NarrationStyle = "motherly" | "normal";
+
+export interface StorySetup {
+  ageRange: ChildAgeRange | null;
+  gender: ChildGender;
+  style: NarrationStyle;
+  /** Chosen once gender is picked, reused for every {{NAME}} token so
+   *  the same protagonist name is used throughout a session. */
+  protagonistName: string;
+}
+
+export interface Story {
+  id: string;
+  ageRanges: ChildAgeRange[];
+  title: { fa: string; en: string };
+  teaser: { fa: string; en: string };
+  /** Each paragraph may contain the token {{NAME}}, substituted with
+   *  StorySetup.protagonistName at narration time. */
+  paragraphs: { fa: string; en: string }[];
+  moral: { fa: string; en: string };
+}
+
+export interface StorySearchQuery {
+  ageRange?: ChildAgeRange;
+}

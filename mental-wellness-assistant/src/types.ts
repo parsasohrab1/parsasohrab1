@@ -642,3 +642,37 @@ export interface LyricsResult {
   lyrics: string | null;
   source: "local_demo_placeholder" | "unavailable";
 }
+
+/**
+ * Social-situations advisor domain. Given a relation, a scenario, and
+ * a few chip-picked personality traits of the OTHER person (never
+ * free-text analysis of a third party — see DISCLAIMERS below), this
+ * matches a small hand-written strategy dataset. It is general social
+ * guidance, not a real psychological read of anyone.
+ */
+export type SocialRelation = "mother" | "father" | "sibling" | "spouse" | "in_law" | "friend" | "coworker" | "other";
+
+export type SocialScenario =
+  | "financial_boundary"
+  | "unsolicited_advice"
+  | "decision_disagreement"
+  | "generosity_conflict"
+  | "boundary_setting"
+  | "family_expectation";
+
+export type PersonalityTrait = "generous" | "frugal" | "controlling" | "flexible" | "traditional" | "modern" | "emotional" | "calm";
+
+export interface SocialSituationProfile {
+  relation: SocialRelation;
+  scenario: SocialScenario;
+  traits: PersonalityTrait[];
+}
+
+export interface SocialStrategy {
+  id: string;
+  relations: SocialRelation[];
+  scenarios: SocialScenario[];
+  traits: PersonalityTrait[];
+  personalityNote: { fa: string; en: string };
+  advice: { fa: string; en: string };
+}

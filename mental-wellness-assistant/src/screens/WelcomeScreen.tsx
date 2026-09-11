@@ -69,6 +69,9 @@ export default function WelcomeScreen({ navigation }: Props) {
       <Pressable style={styles.textLink} onPress={() => navigation.navigate("SongId")}>
         <Text style={styles.textLinkText}>اسم یه آهنگ یادم نیست، پیداش کن ↗</Text>
       </Pressable>
+      <Pressable style={styles.textLink} onPress={() => navigation.navigate("SocialAdvisor")}>
+        <Text style={styles.textLinkText}>راهنمایی برای موقعیت‌های اجتماعی و خانوادگی ↗</Text>
+      </Pressable>
       <Pressable style={styles.textLink} onPress={() => navigation.navigate("Settings")}>
         <Text style={styles.textLinkText}>تنظیمات زبان و صدا ↗</Text>
       </Pressable>

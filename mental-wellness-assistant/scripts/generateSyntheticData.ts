@@ -39,6 +39,7 @@ import { buildQuitPlan, computeStreak, requiresMedicalCaution } from "../src/eng
 import { inferMindset, milestonesForPath, progressSummary, recommendPaths } from "../src/engine/careerCoachEngine";
 import { MINDSET_QUESTIONS, PATH_LABEL } from "../src/data/careerStrategies";
 import { identifyByText, localPlaceholderLyricsProvider } from "../src/engine/songIdEngine";
+import { personalityInsight, recommendStrategies } from "../src/engine/socialAdvisorEngine";
 import {
   ChildAgeRange,
   ChildGender,
@@ -425,6 +426,16 @@ async function main() {
   console.log(
     "  NOTE: no audio fingerprinting anywhere — this is text-only matching against a fictional local catalog. See DISCLAIMERS.songIdLimitations."
   );
+
+  console.log("\n" + "=".repeat(70));
+  console.log("Synthetic social-advisor demo (the trousseau-shopping example from the feature request):");
+
+  const socialProfile = { relation: "mother" as const, scenario: "financial_boundary" as const, traits: ["generous" as const] };
+  console.log(`\n  Situation: relation=${socialProfile.relation}, scenario=${socialProfile.scenario}, traits=${socialProfile.traits.join(",")}`);
+  const insight = personalityInsight(socialProfile.traits, "en");
+  console.log(`  Personality insight: ${insight}`);
+  const socialResults = recommendStrategies(socialProfile);
+  console.log(`  Top strategy: ${socialResults[0].strategy.advice.en}`);
 
   console.log("\n" + "=".repeat(70));
   console.log("Done. This is synthetic/demo data only — no real user data exists in this repo.");

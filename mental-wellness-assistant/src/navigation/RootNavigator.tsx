@@ -22,6 +22,7 @@ import StyleResultsScreen from "@/screens/StyleResultsScreen";
 import CompanionScreen from "@/screens/CompanionScreen";
 import QuitCoachScreen from "@/screens/QuitCoachScreen";
 import CareerCoachScreen from "@/screens/CareerCoachScreen";
+import SongIdScreen from "@/screens/SongIdScreen";
 import SettingsScreen from "@/screens/SettingsScreen";
 
 export type RootStackParamList = {
@@ -46,6 +47,7 @@ export type RootStackParamList = {
   Companion: undefined;
   QuitCoach: undefined;
   CareerCoach: undefined;
+  SongId: undefined;
   Settings: undefined;
 };
 
@@ -131,6 +133,7 @@ export default function RootNavigator() {
         <Stack.Screen name="Companion" component={CompanionScreen} options={{ title: "رفیق همراه" }} />
         <Stack.Screen name="QuitCoach" component={QuitCoachScreen} options={{ title: "ترک عادت" }} />
         <Stack.Screen name="CareerCoach" component={CareerCoachScreen} options={{ title: "مشاور شغلی" }} />
+        <Stack.Screen name="SongId" component={SongIdScreen} options={{ title: "پیدا کردن آهنگ" }} />
         <Stack.Screen name="Settings" component={SettingsScreen} options={{ title: "تنظیمات" }} />
       </Stack.Navigator>
     </NavigationContainer>

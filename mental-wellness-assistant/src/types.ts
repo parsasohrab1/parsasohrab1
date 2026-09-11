@@ -614,3 +614,31 @@ export interface CareerJournalEntry {
   note: string;
   loggedAt: string;
 }
+
+/**
+ * Song-identification domain. IMPORTANT SCOPE NOTE: there is no audio
+ * fingerprinting or humming recognition here — this app cannot listen
+ * to hummed melodies or an audio clip and identify a real song, and it
+ * does not attempt to fake that. What it does do, honestly: fuzzy
+ * text matching of a spoken/typed title, artist, or remembered lyric
+ * fragment against this app's own small, fictional local music
+ * catalog (see src/data/musicCatalog.ts — every track is invented for
+ * this demo), plus a couple of original placeholder "lyrics" snippets
+ * for a handful of those fictional tracks so the display pipeline is
+ * testable without shipping any real, copyrighted lyrics. See
+ * DISCLAIMERS.songIdLimitations, and engine/songIdEngine.ts for the
+ * documented extension point (a real audio-fingerprinting provider
+ * like ACRCloud/AudD, and a real lyrics provider like
+ * Musixmatch/Genius) that a production build would need.
+ */
+export interface SongIdMatch {
+  track: MusicTrack;
+  /** 0-100 fuzzy text-match confidence against the local catalog only. */
+  score: number;
+}
+
+export interface LyricsResult {
+  trackId: string;
+  lyrics: string | null;
+  source: "local_demo_placeholder" | "unavailable";
+}

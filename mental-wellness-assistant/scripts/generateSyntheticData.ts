@@ -38,6 +38,7 @@ import {
 import { buildQuitPlan, computeStreak, requiresMedicalCaution } from "../src/engine/quitCoachEngine";
 import { inferMindset, milestonesForPath, progressSummary, recommendPaths } from "../src/engine/careerCoachEngine";
 import { MINDSET_QUESTIONS, PATH_LABEL } from "../src/data/careerStrategies";
+import { identifyByText, localPlaceholderLyricsProvider } from "../src/engine/songIdEngine";
 import {
   ChildAgeRange,
   ChildGender,
@@ -162,7 +163,7 @@ function printUserReport(user: SyntheticUserProfile) {
   }
 }
 
-function main() {
+async function main() {
   console.log(`Generating ${NUM_SYNTHETIC_USERS} synthetic users (mode=${MODE})...`);
   console.log(`Question bank size: ${QUESTIONS.length} | Condition catalog size: ${CONDITIONS.length}`);
 
@@ -405,6 +406,24 @@ function main() {
   }
   console.log(
     "  NOTE: 'following the user until success' is an on-device checklist + journal only — no real backend or push-notification tracking. See DISCLAIMERS.careerCoachLimitations."
+  );
+
+  console.log("\n" + "=".repeat(70));
+  console.log("Synthetic song-ID demo (fuzzy text match against the local fictional catalog only):");
+
+  const songQueries = ["golden hour", "بارون بهاری", "some song that does not exist at all"];
+  for (const q of songQueries) {
+    const matches = identifyByText(q);
+    console.log(`\n  Query: "${q}" -> ${matches.length} match(es)`);
+    for (const m of matches) {
+      console.log(`    ${m.track.title} — ${m.track.artist} (score: ${m.score})`);
+    }
+  }
+  const lyricsDemo = await localPlaceholderLyricsProvider.getLyrics("trk_vf_1");
+  console.log(`\n  Placeholder lyrics for trk_vf_1 (source: ${lyricsDemo.source}):`);
+  console.log(`    ${lyricsDemo.lyrics?.replace(/\n/g, " / ")}`);
+  console.log(
+    "  NOTE: no audio fingerprinting anywhere — this is text-only matching against a fictional local catalog. See DISCLAIMERS.songIdLimitations."
   );
 
   console.log("\n" + "=".repeat(70));

@@ -36,6 +36,8 @@ import {
   summarizeRecentMoods,
 } from "../src/engine/companionEngine";
 import { buildQuitPlan, computeStreak, requiresMedicalCaution } from "../src/engine/quitCoachEngine";
+import { inferMindset, milestonesForPath, progressSummary, recommendPaths } from "../src/engine/careerCoachEngine";
+import { MINDSET_QUESTIONS, PATH_LABEL } from "../src/data/careerStrategies";
 import {
   ChildAgeRange,
   ChildGender,
@@ -47,6 +49,7 @@ import {
   MoodLogEntry,
   QuitCheckIn,
   QuitProfile,
+  CareerMindsetAnswer,
 } from "../src/types";
 
 const NUM_SYNTHETIC_USERS = 8;
@@ -376,6 +379,32 @@ function main() {
   );
   console.log(
     "  NOTE: for alcohol/drugs, this plan is intentionally generic and always paired with a medical-supervision caution — see DISCLAIMERS.quitCoachMedicalSupervision."
+  );
+
+  console.log("\n" + "=".repeat(70));
+  console.log("Synthetic career-coach demo (3 mindset questions -> path -> milestone checklist):");
+
+  const syntheticMindsetAnswers: CareerMindsetAnswer[] = MINDSET_QUESTIONS.map((q, i) => ({
+    questionId: q.id,
+    leansEntrepreneur: i !== 0, // 2 of 3 lean entrepreneur
+  }));
+  const mindset = inferMindset(syntheticMindsetAnswers);
+  console.log(`\n  Inferred mindset from 3 answers: ${mindset}`);
+  const suggestedPaths = recommendPaths(mindset);
+  console.log(`  Suggested paths: ${suggestedPaths.map((p) => PATH_LABEL[p].en).join(", ")}`);
+
+  const chosenPath = suggestedPaths[0];
+  const milestones = milestonesForPath(chosenPath);
+  milestones[0].done = true;
+  milestones[1].done = true;
+  console.log(`\n  Chose path: ${PATH_LABEL[chosenPath].en}`);
+  const progress = progressSummary(milestones);
+  console.log(`  Progress: ${progress.done}/${progress.total} (${progress.percent}%)`);
+  for (const m of milestones) {
+    console.log(`    [${m.done ? "x" : " "}] ${m.label.en}`);
+  }
+  console.log(
+    "  NOTE: 'following the user until success' is an on-device checklist + journal only — no real backend or push-notification tracking. See DISCLAIMERS.careerCoachLimitations."
   );
 
   console.log("\n" + "=".repeat(70));

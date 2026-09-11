@@ -580,3 +580,37 @@ export interface QuitCheckIn {
   note?: string;
   loggedAt: string;
 }
+
+/**
+ * Career-coach ("مشاور شغلی") domain. Mindset is discovered from a
+ * short chip-based Q&A (never free-text NLU) and used to recommend a
+ * subset of paths; "following the user until final success" is
+ * implemented honestly as a local, on-device milestone checklist plus
+ * a free-text journal — never a real push-notification/backend
+ * tracking system, which this scaffold has no backend for.
+ */
+export type CareerMindset = "employee" | "entrepreneur";
+
+export type CareerPath = "resume_applications" | "internship" | "skill_building" | "freelancing" | "business_startup";
+
+export interface CareerMindsetAnswer {
+  questionId: string;
+  leansEntrepreneur: boolean;
+}
+
+export interface CareerProfile {
+  mindset: CareerMindset;
+  chosenPath: CareerPath | null;
+}
+
+export interface CareerMilestone {
+  id: string;
+  label: { fa: string; en: string };
+  done: boolean;
+}
+
+export interface CareerJournalEntry {
+  date: string;
+  note: string;
+  loggedAt: string;
+}

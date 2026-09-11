@@ -251,3 +251,90 @@ export interface Story {
 export interface StorySearchQuery {
   ageRange?: ChildAgeRange;
 }
+
+/**
+ * Marriage/relationship guidance domain. NOTE ON SCOPE: this produces
+ * general, non-clinical relationship suggestions drawn from a small
+ * curated dataset (see data/relationshipStrategies.ts) — never a
+ * replacement for a licensed couples/family therapist, and never advice
+ * for an unsafe or abusive relationship, which routes to
+ * RelationshipSafetyScreen instead of a strategy list.
+ */
+export type MaritalStatus = "married" | "engaged";
+/** Captured only to phrase questions naturally (e.g. "همسرت" vs
+ *  "نامزدت"); it never changes which advice is given. */
+export type ClientGenderRole = "woman" | "man";
+
+export interface CounselingProfile {
+  status: MaritalStatus | null;
+  genderRole: ClientGenderRole;
+}
+
+export type RelationshipTopic =
+  | "communication"
+  | "trust"
+  | "finances"
+  | "in_laws"
+  | "conflict"
+  | "expectations"
+  | "premarital_readiness"
+  | "connection"
+  | "shared_decisions"
+  | "jealousy"
+  | "safety";
+
+export interface CounselingQuestion {
+  id: string;
+  topic: RelationshipTopic;
+  /** Which marital-status profiles this question is asked of; omit for
+   *  "both". */
+  appliesTo?: MaritalStatus[];
+  stage: QuestionStage;
+  text: { fa: string; en: string };
+  options: AnswerOption[];
+  /** Marks the always-asked item(s) that feed the relationship-safety gate. */
+  isSafetyItem?: boolean;
+}
+
+export interface CounselingAnswer {
+  questionId: string;
+  topic: RelationshipTopic;
+  value: AnswerValue;
+  freeText?: string;
+  answeredAt: string;
+}
+
+export interface TopicScore {
+  topic: RelationshipTopic;
+  itemsAnswered: number;
+  /** 0-100 heuristic concern level for this topic — higher means the
+   *  client's answers suggest more friction/need in this area. */
+  concernPercent: number;
+  band: "low" | "moderate" | "high";
+}
+
+export interface RelationshipStrategy {
+  id: string;
+  topics: RelationshipTopic[];
+  appliesTo?: MaritalStatus[];
+  /** Attribution: either a well-known therapeutic approach (the advice
+   *  text is an original summary written for this app, not a quotation)
+   *  or a traditional Persian proverb. */
+  source: { fa: string; en: string };
+  advice: { fa: string; en: string };
+}
+
+export interface RelationshipSafetyAssessment {
+  triggered: boolean;
+  reasons: string[];
+  severity: "none" | "watch" | "urgent";
+}
+
+export interface CounselingResult {
+  sessionId: string;
+  completedAt: string;
+  topicScores: TopicScore[];
+  topTopics: RelationshipTopic[];
+  recommendedStrategies: RelationshipStrategy[];
+  safety: RelationshipSafetyAssessment;
+}

@@ -25,4 +25,12 @@ export const DISCLAIMERS = {
     fa: "این برنامه یک اسکلت (scaffold) نمایشی با داده‌های ساختگی (synthetic) است و برای استفاده بالینی واقعی طراحی نشده است.",
     en: "This app is a demo scaffold using synthetic data and is not designed for real clinical use.",
   },
+  counselingNotSubstitute: {
+    fa: "این راهکارها پیشنهادهای عمومی و آموزشی‌اند، برگرفته از رویکردهای شناخته‌شدهٔ روان‌شناسی و ضرب‌المثل‌های فارسی، نه یک جلسهٔ مشاورهٔ واقعی. برای مشکلات جدی یا پابرجا، حتماً نزد یک مشاور خانواده یا روان‌شناس بالینی دارای مجوز بروید.",
+    en: "These are general, educational suggestions drawn from well-known psychological approaches and Persian proverbs — not a real counseling session. For serious or ongoing issues, please see a licensed family/couples counselor or clinical psychologist.",
+  },
+  relationshipSafetyNotSubstitute: {
+    fa: "اگر رابطه‌تان شامل تهدید، کنترل شدید یا خشونت است، این دستیار جایگزین کمک حرفه‌ای یا حقوقی نیست. لطفاً با یک مشاور دارای مجوز، مرکز حمایت از زنان یا خانواده، یا در خطر فوری، با اورژانس تماس بگیرید.",
+    en: "If your relationship involves threats, severe control, or violence, this assistant cannot replace professional or legal help. Please reach out to a licensed counselor, a domestic-violence/family support service, or emergency services if you're in immediate danger.",
+  },
 } as const;

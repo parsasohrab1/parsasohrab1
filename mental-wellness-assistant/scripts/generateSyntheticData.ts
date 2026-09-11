@@ -22,7 +22,12 @@ import {
   renderTitle,
   storiesForAge,
 } from "../src/engine/storytellingEngine";
-import { ChildAgeRange, ChildGender, FavoriteMusicProfile } from "../src/types";
+import {
+  getNextCounselingQuestionId,
+  scoreCounselingSession,
+} from "../src/engine/counselingEngine";
+import { counselingQuestionById } from "../src/data/counselingQuestions";
+import { ChildAgeRange, ChildGender, CounselingAnswer, FavoriteMusicProfile, MaritalStatus } from "../src/types";
 
 const NUM_SYNTHETIC_USERS = 8;
 const MODE: ScreeningMode = "full";
@@ -160,6 +165,56 @@ function main() {
     console.log(`  "${s}" -> crisisKeywordMatch=${textLooksLikeCrisis(s)}`);
   }
   console.log("=".repeat(70));
+
+  console.log("\nSynthetic marriage-counseling demo (profile asked -> Q&A -> strategies):");
+
+  function runSyntheticCounselingClient(
+    label: string,
+    status: MaritalStatus,
+    highConcernTopicQuestionId: string,
+    atRisk: boolean
+  ) {
+    const answers: CounselingAnswer[] = [];
+    let answeredIds: string[] = [];
+    // eslint-disable-next-line no-constant-condition
+    while (true) {
+      const nextId = getNextCounselingQuestionId(answeredIds, answers, status);
+      if (!nextId) break;
+      const q = counselingQuestionById(nextId)!;
+      let value: 0 | 1 | 2 | 3;
+      if (q.isSafetyItem) {
+        value = atRisk ? 3 : 0; // keep the safety item deterministic so this demo is reproducible
+      } else if (nextId === highConcernTopicQuestionId) {
+        value = 3;
+      } else {
+        value = pick([0, 0, 1]) as 0 | 1;
+      }
+      const freeText = atRisk && q.isSafetyItem ? "او همیشه تهدیدم می‌کنه و کنترلم می‌کنه" : undefined;
+      answers.push({ questionId: q.id, topic: q.topic, value, freeText, answeredAt: new Date().toISOString() });
+      answeredIds = answers.map((a) => a.questionId);
+      if (freeText) break; // mirrors the app: a safety disclosure ends the Q&A immediately
+    }
+
+    const result = scoreCounselingSession(label, answers, status);
+    console.log(`\n  Client: ${label} (${status})`);
+    if (result.safety.triggered) {
+      console.log(
+        `  ⚠️  RELATIONSHIP SAFETY FLOW TRIGGERED (severity=${result.safety.severity}, reasons=${result.safety.reasons.join(",")})`
+      );
+      console.log("      -> app would route to RelationshipSafetyScreen with hotline numbers, not a strategy list.");
+      return;
+    }
+    console.log(`    Top-concern topics: ${result.topTopics.join(", ") || "none"}`);
+    for (const s of result.recommendedStrategies) {
+      console.log(`    - ${s.advice.en} [${s.source.en}]`);
+    }
+  }
+
+  runSyntheticCounselingClient("married_woman_finances", "married", "cq_finances", false);
+  runSyntheticCounselingClient("engaged_man_premarital", "engaged", "cq_premarital_readiness", false);
+  runSyntheticCounselingClient("married_man_at_risk", "married", "cq_trust", true);
+
+  console.log("\n" + "=".repeat(70));
 
   console.log("\nSynthetic favorite-music profile demo:");
   const syntheticProfiles: FavoriteMusicProfile[] = [

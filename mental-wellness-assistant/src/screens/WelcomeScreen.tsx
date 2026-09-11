@@ -45,6 +45,9 @@ export default function WelcomeScreen({ navigation }: Props) {
       <Pressable style={styles.textLink} onPress={() => navigation.navigate("Storytelling")}>
         <Text style={styles.textLinkText}>برای بچه‌ها قصه بگو ↗</Text>
       </Pressable>
+      <Pressable style={styles.textLink} onPress={() => navigation.navigate("Counseling")}>
+        <Text style={styles.textLinkText}>مشاورهٔ زناشویی و روابط ↗</Text>
+      </Pressable>
       <Pressable style={styles.textLink} onPress={() => navigation.navigate("Settings")}>
         <Text style={styles.textLinkText}>تنظیمات زبان و صدا ↗</Text>
       </Pressable>

@@ -11,6 +11,9 @@ import RecipeScreen from "@/screens/RecipeScreen";
 import CookingScreen from "@/screens/CookingScreen";
 import StorytellingScreen from "@/screens/StorytellingScreen";
 import StoryPlaybackScreen from "@/screens/StoryPlaybackScreen";
+import CounselingScreen from "@/screens/CounselingScreen";
+import CounselingResultsScreen from "@/screens/CounselingResultsScreen";
+import RelationshipSafetyScreen from "@/screens/RelationshipSafetyScreen";
 import SettingsScreen from "@/screens/SettingsScreen";
 
 export type RootStackParamList = {
@@ -24,6 +27,9 @@ export type RootStackParamList = {
   Cooking: undefined;
   Storytelling: undefined;
   StoryPlayback: undefined;
+  Counseling: undefined;
+  CounselingResults: undefined;
+  RelationshipSafety: undefined;
   Settings: undefined;
 };
 
@@ -69,6 +75,21 @@ export default function RootNavigator() {
           name="StoryPlayback"
           component={StoryPlaybackScreen}
           options={{ title: "قصه‌گویی", gestureEnabled: false }}
+        />
+        <Stack.Screen
+          name="Counseling"
+          component={CounselingScreen}
+          options={{ title: "مشاورهٔ زناشویی" }}
+        />
+        <Stack.Screen
+          name="CounselingResults"
+          component={CounselingResultsScreen}
+          options={{ title: "راهکارهای پیشنهادی" }}
+        />
+        <Stack.Screen
+          name="RelationshipSafety"
+          component={RelationshipSafetyScreen}
+          options={{ title: "ایمنی رابطه", gestureEnabled: false }}
         />
         <Stack.Screen name="Settings" component={SettingsScreen} options={{ title: "تنظیمات" }} />
       </Stack.Navigator>

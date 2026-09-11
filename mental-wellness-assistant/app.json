@@ -1,0 +1,34 @@
+{
+  "expo": {
+    "name": "دستیار همراه ذهن",
+    "slug": "mental-wellness-voice-assistant",
+    "scheme": "mindcompanion",
+    "version": "0.1.0",
+    "orientation": "portrait",
+    "userInterfaceStyle": "automatic",
+    "icon": "./assets/icon.png",
+    "splash": {
+      "backgroundColor": "#0f172a"
+    },
+    "assetBundlePatterns": ["**/*"],
+    "ios": {
+      "supportsTablet": true,
+      "bundleIdentifier": "com.example.mindcompanion",
+      "infoPlist": {
+        "NSMicrophoneUsageDescription": "برای گفتگوی صوتی با دستیار، به میکروفون دسترسی نیاز است. در هر لحظه می‌توانید به‌جای صحبت کردن، تایپ کنید.",
+        "NSSpeechRecognitionUsageDescription": "برای تبدیل گفتار شما به متن و پاسخ‌گویی، به تشخیص گفتار نیاز است."
+      }
+    },
+    "android": {
+      "package": "com.example.mindcompanion",
+      "permissions": ["RECORD_AUDIO"],
+      "adaptiveIcon": {
+        "backgroundColor": "#0f172a"
+      }
+    },
+    "web": {
+      "bundler": "metro",
+      "favicon": "./assets/icon.png"
+    }
+  }
+}

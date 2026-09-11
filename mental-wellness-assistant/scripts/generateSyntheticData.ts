@@ -13,6 +13,9 @@ import { CONDITIONS } from "../src/data/conditions";
 import { getNextQuestionId, scoreSession, ScreeningMode } from "../src/engine/screeningEngine";
 import { assessCrisis, textLooksLikeCrisis } from "../src/engine/crisisDetector";
 import { moodFromScreeningResult, getPlaylistForResult } from "../src/engine/moodMusicEngine";
+import { categorizeTracks, recommendForProfile } from "../src/engine/musicSearchEngine";
+import { TRACKS } from "../src/data/musicCatalog";
+import { FavoriteMusicProfile } from "../src/types";
 
 const NUM_SYNTHETIC_USERS = 8;
 const MODE: ScreeningMode = "full";
@@ -150,6 +153,43 @@ function main() {
     console.log(`  "${s}" -> crisisKeywordMatch=${textLooksLikeCrisis(s)}`);
   }
   console.log("=".repeat(70));
+
+  console.log("\nSynthetic favorite-music profile demo:");
+  const syntheticProfiles: FavoriteMusicProfile[] = [
+    {
+      favoriteArtists: ["مهتاب کیانی", "بامداد"],
+      favoriteGenres: ["سنتی-فیوژن"],
+      vocalPreference: "vocal",
+      originPreference: "iranian",
+      updatedAt: new Date().toISOString(),
+    },
+    {
+      favoriteArtists: ["Ambient Collective"],
+      favoriteGenres: ["ambient", "lo-fi"],
+      vocalPreference: "instrumental",
+      originPreference: "foreign",
+      updatedAt: new Date().toISOString(),
+    },
+    {
+      favoriteArtists: [],
+      favoriteGenres: ["pop", "پاپ"],
+      vocalPreference: "vocal",
+      originPreference: "both",
+      updatedAt: new Date().toISOString(),
+    },
+  ];
+
+  for (const [i, profile] of syntheticProfiles.entries()) {
+    console.log(`\n  Profile ${i + 1}: artists=[${profile.favoriteArtists.join(", ") || "-"}] genres=[${profile.favoriteGenres.join(", ") || "-"}] vocal=${profile.vocalPreference} origin=${profile.originPreference}`);
+    const ranked = recommendForProfile(profile, TRACKS).slice(0, 6);
+    const categorized = categorizeTracks(ranked);
+    console.log(`    Top picks: ${ranked.map((t) => `${t.title} (${t.artist})`).join(" | ")}`);
+    console.log(
+      `    Categorized -> vocal+iranian=${categorized.vocalIranian.length}, vocal+foreign=${categorized.vocalForeign.length}, instrumental+iranian=${categorized.instrumentalIranian.length}, instrumental+foreign=${categorized.instrumentalForeign.length}`
+    );
+  }
+
+  console.log("\n" + "=".repeat(70));
   console.log("Done. This is synthetic/demo data only — no real user data exists in this repo.");
 }
 

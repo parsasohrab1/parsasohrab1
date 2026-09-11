@@ -21,7 +21,7 @@ const MOOD_LABEL: Record<Mood, { fa: string; en: string }> = {
   calm: { fa: "آرام", en: "Calm" },
 };
 
-export default function MusicScreen({}: Props) {
+export default function MusicScreen({ navigation }: Props) {
   const { result, locale } = useSession();
   const suggested = result ? moodFromScreeningResult(result) : "calm";
   const [mood, setMood] = useState<Mood>(suggested);
@@ -51,6 +51,12 @@ export default function MusicScreen({}: Props) {
         <TrackCard key={t.id} track={t} />
       ))}
 
+      <Pressable style={styles.favoritesButton} onPress={() => navigation.navigate("FavoriteMusic")}>
+        <Text style={styles.favoritesButtonText}>
+          موسیقی مورد علاقه‌ام را پیدا و دسته‌بندی کن (باکلام/بی‌کلام، ایرانی/خارجی) ↗
+        </Text>
+      </Pressable>
+
       <Text style={styles.note}>
         فهرست بالا داده نمایشی است؛ فقط اولین قطعه یک تُن صوتی واقعی برای نمایش پخش دارد. در نسخه واقعی، این بخش
         باید به یک سرویس موسیقی مجاز مثل Spotify یا Apple Music وصل شود.
@@ -74,5 +80,14 @@ const styles = StyleSheet.create({
   moodChipText: { color: "#cbd5e1", fontSize: 13 },
   moodChipTextActive: { color: "#fff", fontWeight: "700" },
   playlistTitle: { color: "#f1f5f9", fontSize: 16, fontWeight: "700", textAlign: "right", marginBottom: 8 },
+  favoritesButton: {
+    marginTop: 16,
+    borderRadius: 12,
+    paddingVertical: 12,
+    alignItems: "center",
+    borderWidth: 1,
+    borderColor: "#475569",
+  },
+  favoritesButtonText: { color: "#60a5fa", fontSize: 13, textAlign: "center" },
   note: { color: "#64748b", fontSize: 12, textAlign: "right", marginTop: 16, lineHeight: 18 },
 });

@@ -95,11 +95,18 @@ export type Mood =
   | "hopeful"
   | "calm";
 
+/** ایرانی (Iranian) vs خارجی (foreign/international) origin tag. */
+export type MusicOrigin = "iranian" | "foreign";
+
 export interface MusicTrack {
   id: string;
   title: string;
   artist: string;
   moodTags: Mood[];
+  /** true = باکلام (vocal/has lyrics), false = بی‌کلام (instrumental). */
+  vocal: boolean;
+  origin: MusicOrigin;
+  genre: string;
   durationSec: number;
   /** null = catalog metadata only; wire a real CDN/Spotify/Apple Music URL
    *  in production. One demo tone is provided so playback wiring is testable. */
@@ -111,6 +118,29 @@ export interface Playlist {
   mood: Mood;
   title: { fa: string; en: string };
   trackIds: string[];
+}
+
+export type VocalPreference = "vocal" | "instrumental" | "both";
+export type OriginPreference = MusicOrigin | "both";
+
+/**
+ * A listener's music taste, captured once (voice or typed) and reused to
+ * rank/filter the catalog. Persisted locally on-device only — see
+ * state/useFavoriteMusic.ts — never sent anywhere.
+ */
+export interface FavoriteMusicProfile {
+  favoriteArtists: string[];
+  favoriteGenres: string[];
+  vocalPreference: VocalPreference;
+  originPreference: OriginPreference;
+  updatedAt: string;
+}
+
+export interface MusicSearchQuery {
+  text?: string;
+  mood?: Mood;
+  vocal?: VocalPreference;
+  origin?: OriginPreference;
 }
 
 export interface SupplementTip {

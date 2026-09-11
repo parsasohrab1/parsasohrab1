@@ -6,6 +6,7 @@ import ScreeningScreen from "@/screens/ScreeningScreen";
 import ResultsScreen from "@/screens/ResultsScreen";
 import CrisisScreen from "@/screens/CrisisScreen";
 import MusicScreen from "@/screens/MusicScreen";
+import FavoriteMusicScreen from "@/screens/FavoriteMusicScreen";
 import SettingsScreen from "@/screens/SettingsScreen";
 
 export type RootStackParamList = {
@@ -14,6 +15,7 @@ export type RootStackParamList = {
   Results: undefined;
   Crisis: undefined;
   Music: undefined;
+  FavoriteMusic: undefined;
   Settings: undefined;
 };
 
@@ -39,6 +41,11 @@ export default function RootNavigator() {
           options={{ title: "کمک فوری", gestureEnabled: false }}
         />
         <Stack.Screen name="Music" component={MusicScreen} options={{ title: "موسیقی آرام‌بخش" }} />
+        <Stack.Screen
+          name="FavoriteMusic"
+          component={FavoriteMusicScreen}
+          options={{ title: "موسیقی مورد علاقه" }}
+        />
         <Stack.Screen name="Settings" component={SettingsScreen} options={{ title: "تنظیمات" }} />
       </Stack.Navigator>
     </NavigationContainer>

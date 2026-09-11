@@ -38,18 +38,21 @@ src/
     disclaimers.ts             تمام متن‌های سلب مسئولیت، یک‌جا
     crisisResources.ts         شماره‌های خط بحران/اورژانس (باید برای منطقه هدف تأیید شود)
     comfortContent.ts          اسکریپت تنفس + جوک‌های ملایم (فقط کمک ثانویه در بحران)
-    musicCatalog.ts / demoTone.ts   کاتالوگ موسیقی ساختگی + یک تُن صوتی نمایشی واقعی
+    musicCatalog.ts / demoTone.ts   کاتالوگ موسیقی ساختگی (باکلام/بی‌کلام × ایرانی/خارجی) + یک تُن نمایشی واقعی
     supplementTips.ts          توصیه‌های سبک زندگی عمومی (نه نسخهٔ پزشکی)
   engine/
     screeningEngine.ts         انتخاب تطبیقی سؤال بعدی + امتیازدهی نهایی
     crisisDetector.ts          تشخیص ریسک از روی مقیاس ایمنی + کلیدواژه‌های متن آزاد
     moodMusicEngine.ts         نگاشت نتیجهٔ غربالگری/حال‌وهوا به یک پلی‌لیست
+    musicSearchEngine.ts       جستجو/دسته‌بندی/رتبه‌بندی موسیقی بر اساس علایق کاربر (نگاه پایین)
   voice/voiceService.ts        انتزاع صدا: TTS با expo-speech (iOS/Android/Web)،
                                 STT با Web Speech API فقط در مرورگرهای پشتیبان؛ در غیر این صورت
                                 به‌صورت خودکار به تایپ سوییچ می‌کند (هرگز صدا اجباری نیست)
-  state/SessionContext.tsx     وضعیت گفتگو (React Context)
+  state/
+    SessionContext.tsx         وضعیت گفتگوی غربالگری (React Context)
+    useFavoriteMusic.ts         علایق موسیقایی کاربر، ذخیره‌شده روی دستگاه (AsyncStorage)
   navigation/RootNavigator.tsx  استک ناوبری (React Navigation)
-  screens/                     Welcome, Screening, Results, Crisis, Music, Settings
+  screens/                     Welcome, Screening, Results, Crisis, Music, FavoriteMusic, Settings
   components/                  ChatBubble, MicButton, ProbabilityBar, TrackCard, Disclaimer
 scripts/generateSyntheticData.ts   تولیدکنندهٔ کاربر ساختگی + اجرای موتور امتیازدهی، چاپ در کنسول
 __tests__/                    تست‌های موتور غربالگری و تشخیص بحران (Jest)
@@ -66,6 +69,25 @@ __tests__/                    تست‌های موتور غربالگری و ت�
    کاربر به `CrisisScreen` هدایت می‌شود — صرف‌نظر از این‌که چند سؤال باقی مانده.
 5. در پایان، `scoreSession` یک درصد «شاخص احتمال» ۰ تا ۱۰۰ برای هر بیماری قابل‌امتیازدهی محاسبه
    می‌کند و ۳ بیماری برتر برای پیشنهاد موسیقی/توصیه استفاده می‌شوند.
+
+### موسیقی مورد علاقه (`FavoriteMusicScreen`)
+
+کاتالوگ موسیقی روی سه محور برچسب‌گذاری شده تا بتوان با هر ترکیبی از آن‌ها جستجو/فیلتر کرد:
+حال‌وهوا (mood)، باکلام/بی‌کلام (vocal)، و ایرانی/خارجی (origin) — `src/data/musicCatalog.ts`.
+کاربر می‌تواند هنرمند/ژانر موردعلاقه و ترجیح باکلام‌وبی‌کلام/ایرانی‌وخارجی را ثبت کند (ذخیره‌شده
+روی دستگاه با AsyncStorage، هرگز به جایی ارسال نمی‌شود)، و `musicSearchEngine.ts`:
+
+- کاتالوگ محلی را بر اساس این علایق **رتبه‌بندی** می‌کند (`recommendForProfile`)،
+- نتیجه را در ۴ دستهٔ باکلام‌ایرانی/باکلام‌خارجی/بی‌کلام‌ایرانی/بی‌کلام‌خارجی **دسته‌بندی** می‌کند
+  (`categorizeTracks`)،
+- و از طریق یک انتزاع `MusicSearchProvider` قابل **جستجو** است.
+
+⚠️ **محدودیت مهم**: این اسکلت به اینترنت یا هیچ سرویس موسیقی واقعی (Spotify، YouTube Music، رادیو
+جوان، Apple Music و …) متصل نیست و کلید API ندارد؛ تمام آهنگ‌ها **داده‌های ساختگی با نام‌های کاملاً
+جعلی** هستند (برای پرهیز از نقض حق مالکیت معنوی/هویتی). دکمهٔ «جستجوی اینترنتی» در همین صفحه عمداً
+به یک ارائه‌دهندهٔ نمایشی (`remoteInternetProvider`) وصل است که خطای صریح می‌دهد، نه این‌که وانمود کند
+واقعاً در اینترنت جستجو کرده. برای اتصال واقعی، یک پیاده‌سازی واقعی پشت همین اینترفیس در
+`src/engine/musicSearchEngine.ts` بنویسید — بقیهٔ اپ بدون تغییر کار می‌کند.
 
 ## اجرا
 

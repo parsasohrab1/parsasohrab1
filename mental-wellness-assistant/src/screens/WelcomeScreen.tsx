@@ -36,6 +36,9 @@ export default function WelcomeScreen({ navigation }: Props) {
       <Pressable style={styles.textLink} onPress={() => navigation.navigate("Music")}>
         <Text style={styles.textLinkText}>فقط می‌خواهم موسیقی آرام‌بخش گوش بدهم ↗</Text>
       </Pressable>
+      <Pressable style={styles.textLink} onPress={() => navigation.navigate("FavoriteMusic")}>
+        <Text style={styles.textLinkText}>موسیقی مورد علاقه‌ام را پیدا و دسته‌بندی کن ↗</Text>
+      </Pressable>
       <Pressable style={styles.textLink} onPress={() => navigation.navigate("Settings")}>
         <Text style={styles.textLinkText}>تنظیمات زبان و صدا ↗</Text>
       </Pressable>

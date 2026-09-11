@@ -438,3 +438,62 @@ export interface LocationInfo {
    *  everywhere as a fallback). */
   address: string | null;
 }
+
+/**
+ * Style/makeup advisor domain. NOTE ON SCOPE: this app does NOT do real
+ * image generation or computer vision — it cannot render a photo of a
+ * makeup look applied to your actual face, or automatically recognize
+ * what's in a photo of your wardrobe. Recommendations are text/voice
+ * descriptions from a small curated dataset, matched against occasion,
+ * budget, and who's doing the makeup; wardrobe "matching" works off tags
+ * the user enters themselves about their own photos, not automated
+ * visual analysis. Every photo stays on-device only (local file URI),
+ * never uploaded anywhere — there's no backend in this scaffold to
+ * upload to. See DISCLAIMERS.styleAdvisorLimitations.
+ */
+export type Occasion = "wedding" | "birthday" | "formal_event" | "mourning" | "everyday";
+export type BudgetLevel = "has_budget" | "limited_budget";
+export type ApplicationPreference = "self" | "friend_or_family" | "professional";
+export type GarmentCategory = "dress" | "top" | "bottom" | "shoes" | "outerwear" | "accessory";
+export type FormalityLevel = "casual" | "semi_formal" | "formal";
+
+export interface StyleProfile {
+  occasion: Occasion | null;
+  budget: BudgetLevel | null;
+  applicationPreference: ApplicationPreference | null;
+  /** Local file URI only — never uploaded. */
+  selfPhotoUri: string | null;
+}
+
+export interface MakeupLook {
+  id: string;
+  occasions: Occasion[];
+  budgets: BudgetLevel[];
+  applicationPreferences: ApplicationPreference[];
+  name: { fa: string; en: string };
+  /** Step-by-step text description — not a rendered image. */
+  steps: { fa: string; en: string }[];
+  note: { fa: string; en: string };
+}
+
+export interface WardrobeItem {
+  id: string;
+  photoUri: string;
+  category: GarmentCategory;
+  formality: FormalityLevel;
+  colorNote: string;
+  addedAt: string;
+}
+
+export interface OutfitSuggestion {
+  occasion: Occasion;
+  items: WardrobeItem[];
+  note: { fa: string; en: string };
+}
+
+export interface StyleResult {
+  sessionId: string;
+  completedAt: string;
+  look: MakeupLook | null;
+  outfit: OutfitSuggestion | null;
+}

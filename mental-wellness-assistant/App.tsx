@@ -5,6 +5,7 @@ import { CookingProvider } from "@/state/CookingContext";
 import { StoryProvider } from "@/state/StoryContext";
 import { CounselingProvider } from "@/state/CounselingContext";
 import { FitnessProvider } from "@/state/FitnessContext";
+import { StyleProvider } from "@/state/StyleContext";
 import RootNavigator from "@/navigation/RootNavigator";
 
 export default function App() {
@@ -14,8 +15,10 @@ export default function App() {
         <StoryProvider>
           <CounselingProvider>
             <FitnessProvider>
-              <StatusBar style="light" />
-              <RootNavigator />
+              <StyleProvider>
+                <StatusBar style="light" />
+                <RootNavigator />
+              </StyleProvider>
             </FitnessProvider>
           </CounselingProvider>
         </StoryProvider>

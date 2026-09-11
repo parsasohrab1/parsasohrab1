@@ -53,6 +53,7 @@ src/
     relationshipStrategies.ts    ۱۹ راهکار: خلاصهٔ اورجینال از رویکردهای شناخته‌شدهٔ روان‌شناسی + ضرب‌المثل‌های فارسی
     fitnessStrategies.ts         ۱۹ راهکار تغذیه/ورزش، برچسب‌خورده با دستهٔ BMI، هدف وزنی، ورزشکار/غیرورزشکار و نوع ورزش (نگاه پایین)
     emergencyContacts.ts         شماره‌های واقعی اورژانس (پلیس ۱۱۰، آتش‌نشانی ۱۲۵، اورژانس ۱۱۵) برای «گوش فعال» (نگاه پایین)
+    styleLooks.ts                ۸ توضیح متنیِ لوک آرایش (نه تصویر تولیدشده)، برچسب‌خورده با مناسبت/بودجه/اجراکننده (نگاه پایین)
   engine/
     screeningEngine.ts         انتخاب تطبیقی سؤال بعدی + امتیازدهی نهایی
     crisisDetector.ts          تشخیص ریسک از روی مقیاس ایمنی + کلیدواژه‌های متن آزاد
@@ -64,6 +65,7 @@ src/
     counselingEngine.ts         انتخاب تطبیقی سؤال + امتیازدهی موضوعی + پیشنهاد راهکار + دروازهٔ ایمنی رابطه (نگاه پایین)
     fitnessEngine.ts             محاسبهٔ BMI + دسته‌بندی + تشخیص قد/وزن از متن آزاد + پیشنهاد راهکار (نگاه پایین)
     activeListeningEngine.ts     تشخیص عبارات اورژانسی از روی متن گفتار + خلاصه‌سازی دوره‌ای (نگاه پایین)
+    styleEngine.ts               انتخاب لوک آرایش + تطبیق ترکیب لباس از روی برچسب‌های کمد لباس (نگاه پایین)
   services/locationService.ts   موقعیت مکانی فعلی + تبدیل به آدرس (best-effort، فقط بومی)
   voice/voiceService.ts        انتزاع صدا: TTS با expo-speech (iOS/Android/Web)،
                                 STT با Web Speech API فقط در مرورگرهای پشتیبان؛ در غیر این صورت
@@ -77,6 +79,7 @@ src/
     CounselingContext.tsx        وضعیت جلسهٔ مشاوره (پروفایل، پاسخ‌ها، نتیجه، دروازهٔ ایمنی)
     FitnessContext.tsx           وضعیت جلسهٔ تغذیه/ورزش (پروفایل، قد/وزن، نتیجهٔ BMI)
     useActiveListeningSetting.ts / useTrustedContact.ts   تنظیم فعال‌سازی و دوست مورد اعتماد، ذخیره‌شده روی دستگاه
+    StyleContext.tsx / useWardrobe.ts   وضعیت جلسهٔ استایل + عکس‌های کمد لباس با برچسب، ذخیره‌شده روی دستگاه
   navigation/RootNavigator.tsx  استک ناوبری (React Navigation)
   screens/                     Welcome, Screening, Results, Crisis, Music, FavoriteMusic,
                                 Recipes, Cooking, Storytelling, StoryPlayback, Counseling,

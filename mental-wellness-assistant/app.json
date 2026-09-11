@@ -17,12 +17,14 @@
       "infoPlist": {
         "NSMicrophoneUsageDescription": "برای گفتگوی صوتی با دستیار، به میکروفون دسترسی نیاز است. در هر لحظه می‌توانید به‌جای صحبت کردن، تایپ کنید.",
         "NSSpeechRecognitionUsageDescription": "برای تبدیل گفتار شما به متن و پاسخ‌گویی، به تشخیص گفتار نیاز است.",
-        "NSLocationWhenInUseUsageDescription": "برای خواندن آدرس تقریبی شما هنگام یک وضعیت اورژانسی در حالت «گوش فعال»، به موقعیت مکانی نیاز است."
+        "NSLocationWhenInUseUsageDescription": "برای خواندن آدرس تقریبی شما هنگام یک وضعیت اورژانسی در حالت «گوش فعال»، به موقعیت مکانی نیاز است.",
+        "NSCameraUsageDescription": "برای گرفتن عکس در بخش «مشاور استایل»، به دوربین نیاز است. این عکس‌ها فقط روی گوشی شما ذخیره می‌شوند.",
+        "NSPhotoLibraryUsageDescription": "برای انتخاب عکس از گالری در بخش «مشاور استایل» (خودتان یا لباس‌هایتان)، به دسترسی گالری نیاز است."
       }
     },
     "android": {
       "package": "com.example.mindcompanion",
-      "permissions": ["RECORD_AUDIO", "ACCESS_COARSE_LOCATION", "ACCESS_FINE_LOCATION"],
+      "permissions": ["RECORD_AUDIO", "ACCESS_COARSE_LOCATION", "ACCESS_FINE_LOCATION", "CAMERA"],
       "adaptiveIcon": {
         "backgroundColor": "#0f172a"
       }

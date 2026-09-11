@@ -17,6 +17,8 @@ import RelationshipSafetyScreen from "@/screens/RelationshipSafetyScreen";
 import FitnessScreen from "@/screens/FitnessScreen";
 import FitnessResultsScreen from "@/screens/FitnessResultsScreen";
 import ActiveListeningScreen from "@/screens/ActiveListeningScreen";
+import StyleAdvisorScreen from "@/screens/StyleAdvisorScreen";
+import StyleResultsScreen from "@/screens/StyleResultsScreen";
 import SettingsScreen from "@/screens/SettingsScreen";
 
 export type RootStackParamList = {
@@ -36,6 +38,8 @@ export type RootStackParamList = {
   Fitness: undefined;
   FitnessResults: undefined;
   ActiveListening: undefined;
+  StyleAdvisor: undefined;
+  StyleResults: undefined;
   Settings: undefined;
 };
 
@@ -107,6 +111,16 @@ export default function RootNavigator() {
           name="ActiveListening"
           component={ActiveListeningScreen}
           options={{ title: "گوش فعال" }}
+        />
+        <Stack.Screen
+          name="StyleAdvisor"
+          component={StyleAdvisorScreen}
+          options={{ title: "مشاور استایل" }}
+        />
+        <Stack.Screen
+          name="StyleResults"
+          component={StyleResultsScreen}
+          options={{ title: "پیشنهاد استایل" }}
         />
         <Stack.Screen name="Settings" component={SettingsScreen} options={{ title: "تنظیمات" }} />
       </Stack.Navigator>

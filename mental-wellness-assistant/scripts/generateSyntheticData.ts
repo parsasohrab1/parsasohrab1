@@ -41,6 +41,8 @@ import { MINDSET_QUESTIONS, PATH_LABEL } from "../src/data/careerStrategies";
 import { identifyByText, localPlaceholderLyricsProvider } from "../src/engine/songIdEngine";
 import { personalityInsight, recommendStrategies } from "../src/engine/socialAdvisorEngine";
 import { recommendGiftIdeas } from "../src/engine/giftAdvisorEngine";
+import { groupByRelation, summarizeMember } from "../src/engine/familyCircleEngine";
+import { FamilyMember } from "../src/types";
 import {
   ChildAgeRange,
   ChildGender,
@@ -455,6 +457,23 @@ async function main() {
   }
   console.log(
     "  NOTE: no real product catalog or prices — every idea is fictional, and book suggestions name a genre, never a specific real title. See DISCLAIMERS.giftAdvisorLimitations."
+  );
+
+  console.log("\n" + "=".repeat(70));
+  console.log("Synthetic family-circle demo (saved people -> reused by the social advisor):");
+
+  const syntheticFamily: FamilyMember[] = [
+    { id: "fam_1", name: "Mom", relation: "mother", traits: ["generous"], notes: null },
+    { id: "fam_2", name: "Dana", relation: "friend", traits: ["frugal"], notes: "college roommate" },
+    { id: "fam_3", name: "Uncle Ray", relation: "other", traits: ["traditional", "controlling"], notes: null },
+  ];
+  for (const m of syntheticFamily) {
+    console.log(`\n  ${summarizeMember(m, "en")}`);
+  }
+  const grouped = groupByRelation(syntheticFamily);
+  console.log(`\n  Grouped by relation: ${Object.keys(grouped).join(", ")}`);
+  console.log(
+    "  NOTE: saved so the user can later pick 'Mom' in the social advisor without re-entering her relation/traits — see DISCLAIMERS.familyCircleLimitations."
   );
 
   console.log("\n" + "=".repeat(70));

@@ -25,7 +25,9 @@ import CareerCoachScreen from "@/screens/CareerCoachScreen";
 import SongIdScreen from "@/screens/SongIdScreen";
 import SocialAdvisorScreen from "@/screens/SocialAdvisorScreen";
 import GiftAdvisorScreen from "@/screens/GiftAdvisorScreen";
+import FamilyCircleScreen from "@/screens/FamilyCircleScreen";
 import SettingsScreen from "@/screens/SettingsScreen";
+import { PersonalityTrait, SocialRelation } from "@/types";
 
 export type RootStackParamList = {
   Welcome: undefined;
@@ -50,7 +52,10 @@ export type RootStackParamList = {
   QuitCoach: undefined;
   CareerCoach: undefined;
   SongId: undefined;
-  SocialAdvisor: undefined;
+  SocialAdvisor:
+    | { presetRelation?: SocialRelation; presetTraits?: PersonalityTrait[]; presetName?: string }
+    | undefined;
+  FamilyCircle: undefined;
   GiftAdvisor: undefined;
   Settings: undefined;
 };
@@ -140,6 +145,7 @@ export default function RootNavigator() {
         <Stack.Screen name="SongId" component={SongIdScreen} options={{ title: "پیدا کردن آهنگ" }} />
         <Stack.Screen name="SocialAdvisor" component={SocialAdvisorScreen} options={{ title: "مشاور موقعیت‌های اجتماعی" }} />
         <Stack.Screen name="GiftAdvisor" component={GiftAdvisorScreen} options={{ title: "پیدا کردن هدیه" }} />
+        <Stack.Screen name="FamilyCircle" component={FamilyCircleScreen} options={{ title: "خانواده و اطرافیان" }} />
         <Stack.Screen name="Settings" component={SettingsScreen} options={{ title: "تنظیمات" }} />
       </Stack.Navigator>
     </NavigationContainer>

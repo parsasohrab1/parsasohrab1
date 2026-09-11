@@ -6,22 +6,12 @@ import { useSession } from "@/state/SessionContext";
 import { voiceService } from "@/voice/voiceService";
 import { personalityInsight, recommendStrategies, ScoredSocialStrategy } from "@/engine/socialAdvisorEngine";
 import { ALL_RELATIONS } from "@/data/socialStrategies";
+import { RELATION_LABEL, TRAIT_LABEL } from "@/data/socialLabels";
 import Disclaimer from "@/components/Disclaimer";
 import { DISCLAIMERS } from "@/data/disclaimers";
 import { PersonalityTrait, SocialRelation, SocialScenario, SocialSituationProfile } from "@/types";
 
 type Props = NativeStackScreenProps<RootStackParamList, "SocialAdvisor">;
-
-const RELATION_LABEL: Record<SocialRelation, { fa: string; en: string }> = {
-  mother: { fa: "مادر", en: "Mother" },
-  father: { fa: "پدر", en: "Father" },
-  sibling: { fa: "خواهر/برادر", en: "Sibling" },
-  spouse: { fa: "همسر", en: "Spouse" },
-  in_law: { fa: "خانوادهٔ همسر", en: "In-law" },
-  friend: { fa: "دوست", en: "Friend" },
-  coworker: { fa: "همکار", en: "Coworker" },
-  other: { fa: "شخص دیگر", en: "Someone else" },
-};
 
 const SCENARIO_LABEL: Record<SocialScenario, { fa: string; en: string }> = {
   financial_boundary: { fa: "مرز مالی", en: "Financial boundary" },
@@ -32,24 +22,14 @@ const SCENARIO_LABEL: Record<SocialScenario, { fa: string; en: string }> = {
   family_expectation: { fa: "انتظار خانوادگی", en: "Family expectation" },
 };
 
-const TRAIT_LABEL: Record<PersonalityTrait, { fa: string; en: string }> = {
-  generous: { fa: "دست‌ودل‌باز", en: "Generous" },
-  frugal: { fa: "محتاط با پول", en: "Frugal" },
-  controlling: { fa: "کنترل‌گر", en: "Controlling" },
-  flexible: { fa: "انعطاف‌پذیر", en: "Flexible" },
-  traditional: { fa: "سنتی", en: "Traditional" },
-  modern: { fa: "امروزی", en: "Modern" },
-  emotional: { fa: "احساساتی", en: "Emotional" },
-  calm: { fa: "آرام", en: "Calm" },
-};
-
 const MAX_TRAITS = 3;
 
-export default function SocialAdvisorScreen({}: Props) {
+export default function SocialAdvisorScreen({ route }: Props) {
   const { locale, voiceEnabled } = useSession();
-  const [relation, setRelation] = useState<SocialRelation | null>(null);
+  const preset = route.params;
+  const [relation, setRelation] = useState<SocialRelation | null>(preset?.presetRelation ?? null);
   const [scenario, setScenario] = useState<SocialScenario | null>(null);
-  const [traits, setTraits] = useState<PersonalityTrait[]>([]);
+  const [traits, setTraits] = useState<PersonalityTrait[]>(preset?.presetTraits ?? []);
   const [results, setResults] = useState<ScoredSocialStrategy[] | null>(null);
   const [insight, setInsight] = useState<string | null>(null);
 
@@ -79,6 +59,9 @@ export default function SocialAdvisorScreen({}: Props) {
   return (
     <ScrollView contentContainerStyle={styles.container}>
       <Text style={styles.heading}>مشاور موقعیت‌های اجتماعی</Text>
+      {preset?.presetName && (
+        <Text style={styles.presetNote}>{locale === "fa" ? `راهکار برای ${preset.presetName}` : `Advice for ${preset.presetName}`}</Text>
+      )}
       <Disclaimer text={DISCLAIMERS.socialAdvisorLimitations} tone="warning" />
 
       <View style={styles.section}>
@@ -148,6 +131,7 @@ export default function SocialAdvisorScreen({}: Props) {
 const styles = StyleSheet.create({
   container: { padding: 20, gap: 4, paddingBottom: 40 },
   heading: { color: "#f8fafc", fontSize: 20, fontWeight: "700", textAlign: "right", marginBottom: 4 },
+  presetNote: { color: "#93c5fd", fontSize: 13, textAlign: "right", marginBottom: 8 },
   section: { marginTop: 16, gap: 8 },
   question: { color: "#f1f5f9", fontSize: 15, textAlign: "right", fontWeight: "600" },
   chipRow: { flexDirection: "row", flexWrap: "wrap", gap: 8 },

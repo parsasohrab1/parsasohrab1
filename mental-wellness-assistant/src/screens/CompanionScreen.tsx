@@ -41,7 +41,9 @@ const MOOD_LABEL: Record<Mood, { fa: string; en: string }> = {
   calm: { fa: "آرام", en: "Calm" },
 };
 
-const SUGGESTION_TARGET: Record<CompanionSuggestion["kind"], keyof RootStackParamList> = {
+type NoParamRoute = { [K in keyof RootStackParamList]: RootStackParamList[K] extends undefined ? K : never }[keyof RootStackParamList];
+
+const SUGGESTION_TARGET: Record<CompanionSuggestion["kind"], NoParamRoute> = {
   music: "Music",
   favorite_music: "FavoriteMusic",
   screening: "Screening",

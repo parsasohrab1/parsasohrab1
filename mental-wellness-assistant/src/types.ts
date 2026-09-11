@@ -724,3 +724,23 @@ export interface GiftIdea {
   idea: { fa: string; en: string };
   isBookSuggestion?: boolean;
 }
+
+/**
+ * Family-circle domain: a persisted, on-device list of the people
+ * around the user (family, close friends, anyone influential in their
+ * life) — a name, a relation, and a few user-picked personality
+ * traits, reusing the same SocialRelation/PersonalityTrait vocabulary
+ * as the social-situations advisor. This is explicitly NOT real
+ * psychological knowledge of anyone; see
+ * DISCLAIMERS.familyCircleLimitations. The point is only to let the
+ * user save a person once and reuse that profile across many later
+ * social-advisor situations, instead of re-picking relation/traits
+ * every time.
+ */
+export interface FamilyMember {
+  id: string;
+  name: string;
+  relation: SocialRelation;
+  traits: PersonalityTrait[];
+  notes: string | null;
+}

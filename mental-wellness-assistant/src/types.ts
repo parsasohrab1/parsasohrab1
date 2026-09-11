@@ -497,3 +497,46 @@ export interface StyleResult {
   look: MakeupLook | null;
   outfit: OutfitSuggestion | null;
 }
+
+/**
+ * "Companion" domain — a persisted, warm-toned presence layered on top
+ * of the rest of the app. NOTE ON SCOPE (important, read before
+ * extending): there is no real language-model conversation here. This
+ * app is entirely static, pre-written content — question banks, canned
+ * strategy text, scripted reflections — with no live AI text generation
+ * anywhere in it. "Getting to know" the user means storing facts they
+ * explicitly tell it and choosing pre-written, mood-matched responses
+ * from a small dataset; it is not understanding in any real sense. A
+ * genuinely open-ended companion that can respond intelligently to
+ * anything would need a real LLM API wired in behind a backend (this
+ * scaffold has none) — documented as the extension point, not built
+ * here. See DISCLAIMERS.companionNotRealAI, always shown on this screen.
+ */
+export interface CompanionProfile {
+  name: string | null;
+  /** Short facts the user chose to share about themselves (hobbies,
+   *  what stresses them, what cheers them up, ...), verbatim. */
+  aboutMe: string[];
+}
+
+export interface MoodLogEntry {
+  mood: Mood;
+  note?: string;
+  loggedAt: string;
+}
+
+/** Which existing app module a companion suggestion points to — the
+ *  screen itself maps this to an actual navigation call. */
+export type CompanionSuggestionKind =
+  | "music"
+  | "favorite_music"
+  | "screening"
+  | "fitness"
+  | "counseling"
+  | "recipes"
+  | "storytelling";
+
+export interface CompanionSuggestion {
+  kind: CompanionSuggestionKind;
+  label: { fa: string; en: string };
+}

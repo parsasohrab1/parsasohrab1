@@ -19,6 +19,7 @@ import FitnessResultsScreen from "@/screens/FitnessResultsScreen";
 import ActiveListeningScreen from "@/screens/ActiveListeningScreen";
 import StyleAdvisorScreen from "@/screens/StyleAdvisorScreen";
 import StyleResultsScreen from "@/screens/StyleResultsScreen";
+import CompanionScreen from "@/screens/CompanionScreen";
 import SettingsScreen from "@/screens/SettingsScreen";
 
 export type RootStackParamList = {
@@ -40,6 +41,7 @@ export type RootStackParamList = {
   ActiveListening: undefined;
   StyleAdvisor: undefined;
   StyleResults: undefined;
+  Companion: undefined;
   Settings: undefined;
 };
 
@@ -122,6 +124,7 @@ export default function RootNavigator() {
           component={StyleResultsScreen}
           options={{ title: "پیشنهاد استایل" }}
         />
+        <Stack.Screen name="Companion" component={CompanionScreen} options={{ title: "رفیق همراه" }} />
         <Stack.Screen name="Settings" component={SettingsScreen} options={{ title: "تنظیمات" }} />
       </Stack.Navigator>
     </NavigationContainer>

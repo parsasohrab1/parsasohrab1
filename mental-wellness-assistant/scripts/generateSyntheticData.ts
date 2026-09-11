@@ -29,12 +29,21 @@ import {
 import { counselingQuestionById } from "../src/data/counselingQuestions";
 import { scoreFitnessSession } from "../src/engine/fitnessEngine";
 import {
+  greeting,
+  journalAcknowledgment,
+  reflectionForMood,
+  suggestionsForMood,
+  summarizeRecentMoods,
+} from "../src/engine/companionEngine";
+import {
   ChildAgeRange,
   ChildGender,
   CounselingAnswer,
   FavoriteMusicProfile,
   FitnessProfile,
   MaritalStatus,
+  Mood,
+  MoodLogEntry,
 } from "../src/types";
 
 const NUM_SYNTHETIC_USERS = 8;
@@ -301,6 +310,36 @@ function main() {
       console.log(`      - ${s.advice.en}`);
     }
   }
+
+  console.log("\n" + "=".repeat(70));
+  console.log("Synthetic companion demo (stored name + a week of mood check-ins -> greeting + summary):");
+
+  const companionName = "سارا";
+  const now = Date.now();
+  const day = 24 * 60 * 60 * 1000;
+  const syntheticMoodLog: MoodLogEntry[] = [
+    { mood: "anxious", loggedAt: new Date(now - 1 * day).toISOString() },
+    { mood: "anxious", loggedAt: new Date(now - 2 * day).toISOString() },
+    { mood: "overwhelmed", loggedAt: new Date(now - 3 * day).toISOString() },
+    { mood: "calm", loggedAt: new Date(now - 10 * day).toISOString() }, // outside the 7-day window
+  ];
+
+  console.log(`\n  Greeting: ${greeting(companionName, "fa")}`);
+  const moodSummary = summarizeRecentMoods(syntheticMoodLog);
+  console.log(
+    `  Recent-mood summary: ${moodSummary.totalEntries} check-ins in the last 7 days, most common: ${moodSummary.mostCommonMood}`
+  );
+
+  const todayMood: Mood = "anxious";
+  console.log(`  Today's mood check-in: ${todayMood}`);
+  console.log(`    Reflection: ${reflectionForMood(todayMood).en}`);
+  for (const s of suggestionsForMood(todayMood)) {
+    console.log(`    Suggestion -> ${s.kind}: ${s.label.en}`);
+  }
+  console.log(`  Journal entry acknowledgment: ${journalAcknowledgment().en}`);
+  console.log(
+    "  NOTE: none of the lines above come from a live language model — see DISCLAIMERS.companionNotRealAI."
+  );
 
   console.log("\n" + "=".repeat(70));
   console.log("Done. This is synthetic/demo data only — no real user data exists in this repo.");

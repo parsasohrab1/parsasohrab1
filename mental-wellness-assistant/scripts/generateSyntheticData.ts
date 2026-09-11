@@ -35,6 +35,7 @@ import {
   suggestionsForMood,
   summarizeRecentMoods,
 } from "../src/engine/companionEngine";
+import { buildQuitPlan, computeStreak, requiresMedicalCaution } from "../src/engine/quitCoachEngine";
 import {
   ChildAgeRange,
   ChildGender,
@@ -44,6 +45,8 @@ import {
   MaritalStatus,
   Mood,
   MoodLogEntry,
+  QuitCheckIn,
+  QuitProfile,
 } from "../src/types";
 
 const NUM_SYNTHETIC_USERS = 8;
@@ -339,6 +342,40 @@ function main() {
   console.log(`  Journal entry acknowledgment: ${journalAcknowledgment().en}`);
   console.log(
     "  NOTE: none of the lines above come from a live language model — see DISCLAIMERS.companionNotRealAI."
+  );
+
+  console.log("\n" + "=".repeat(70));
+  console.log("Synthetic quit-coach demo (profile asked -> gradual plan -> a week of daily check-ins):");
+
+  const syntheticQuitProfile: QuitProfile = {
+    addictionType: "smoking",
+    otherDescription: null,
+    dailyAmount: "10 cigarettes/day",
+    yearsOfHabit: 6,
+    pastQuitAttempts: 2,
+    primaryTrigger: "stress",
+    motivation: "for my kids' health",
+  };
+  console.log(`\n  Client wants to quit: ${syntheticQuitProfile.addictionType}`);
+  console.log(`    Needs medical-supervision caution shown: ${requiresMedicalCaution(syntheticQuitProfile.addictionType)}`);
+  const quitPlan = buildQuitPlan(syntheticQuitProfile);
+  console.log(`    Plan has ${quitPlan.length} steps:`);
+  for (const s of quitPlan) {
+    console.log(`      ${s.order}. ${s.title.en} — ${s.advice.en}`);
+  }
+
+  const syntheticCheckIns: QuitCheckIn[] = [
+    { date: "2026-09-01", usedSubstance: true, cravingLevel: 4, loggedAt: "2026-09-01T20:00:00.000Z" },
+    { date: "2026-09-02", usedSubstance: false, cravingLevel: 3, loggedAt: "2026-09-02T20:00:00.000Z" },
+    { date: "2026-09-03", usedSubstance: false, cravingLevel: 2, loggedAt: "2026-09-03T20:00:00.000Z" },
+    { date: "2026-09-04", usedSubstance: false, cravingLevel: 1, loggedAt: "2026-09-04T20:00:00.000Z" },
+  ];
+  const streak = computeStreak(syntheticCheckIns);
+  console.log(
+    `\n  A week of daily check-ins -> current streak: ${streak.currentStreakDays} smoke-free days, average craving: ${streak.averageCraving}`
+  );
+  console.log(
+    "  NOTE: for alcohol/drugs, this plan is intentionally generic and always paired with a medical-supervision caution — see DISCLAIMERS.quitCoachMedicalSupervision."
   );
 
   console.log("\n" + "=".repeat(70));

@@ -60,6 +60,9 @@ export default function WelcomeScreen({ navigation }: Props) {
       <Pressable style={styles.textLink} onPress={() => navigation.navigate("Companion")}>
         <Text style={styles.textLinkText}>رفیق همراه (گفتگوی روزانه و حال‌واحوال‌پرسی) ↗</Text>
       </Pressable>
+      <Pressable style={styles.textLink} onPress={() => navigation.navigate("QuitCoach")}>
+        <Text style={styles.textLinkText}>کمک برای ترک سیگار یا هر نوع اعتیاد ↗</Text>
+      </Pressable>
       <Pressable style={styles.textLink} onPress={() => navigation.navigate("Settings")}>
         <Text style={styles.textLinkText}>تنظیمات زبان و صدا ↗</Text>
       </Pressable>

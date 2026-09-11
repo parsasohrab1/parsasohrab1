@@ -540,3 +540,43 @@ export interface CompanionSuggestion {
   kind: CompanionSuggestionKind;
   label: { fa: string; en: string };
 }
+
+/**
+ * Quit-coach ("ترک اعتیاد") domain. See
+ * DISCLAIMERS.quitCoachMedicalSupervision, always shown on this screen:
+ * this is general, motivational, gradual-reduction guidance only — never
+ * a substitute for medical detox/supervision, which alcohol and some
+ * drugs genuinely require.
+ */
+export type AddictionType = "smoking" | "alcohol" | "drugs" | "other";
+
+export type QuitTrigger = "stress" | "social" | "boredom" | "habit_routine" | "physical_craving" | "other";
+
+export interface QuitProfile {
+  addictionType: AddictionType;
+  /** Free-text description, only used/shown when addictionType === "other". */
+  otherDescription: string | null;
+  /** Free-text as the user said it (e.g. "10 cigarettes a day", "a few beers on weekends"). */
+  dailyAmount: string | null;
+  yearsOfHabit: number | null;
+  pastQuitAttempts: number | null;
+  primaryTrigger: QuitTrigger | null;
+  /** The user's own stated reason for wanting to quit — used to personalize encouragement. */
+  motivation: string | null;
+}
+
+export interface QuitPlanStep {
+  order: number;
+  title: { fa: string; en: string };
+  advice: { fa: string; en: string };
+}
+
+export interface QuitCheckIn {
+  /** Calendar day the check-in belongs to, as an ISO date (YYYY-MM-DD). */
+  date: string;
+  usedSubstance: boolean;
+  /** 0 (no craving) to 5 (very strong craving). */
+  cravingLevel: number;
+  note?: string;
+  loggedAt: string;
+}

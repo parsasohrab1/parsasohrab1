@@ -769,6 +769,13 @@ export interface QuickContact {
   name: string;
   phone: string | null;
   email: string | null;
+  /** When true, the personal-tasks flow skips its own in-app
+   *  confirmation card for this contact and opens the native
+   *  composer/dialer immediately once an action is resolved. This
+   *  never skips the OS's own send/call tap inside that app — only
+   *  the app's own extra "are you sure?" step, and only for a contact
+   *  the user themselves has explicitly marked trusted. */
+  trusted: boolean;
 }
 
 export interface PersonalTaskIntent {

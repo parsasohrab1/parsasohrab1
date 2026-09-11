@@ -481,8 +481,8 @@ async function main() {
   console.log("Synthetic personal-tasks demo (command text -> parsed intent -> composer URL, never auto-sent):");
 
   const syntheticContacts: QuickContact[] = [
-    { id: "qc_1", name: "مامان", phone: "+15551230000", email: null },
-    { id: "qc_2", name: "Ali", phone: null, email: "ali@example.com" },
+    { id: "qc_1", name: "مامان", phone: "+15551230000", email: null, trusted: true },
+    { id: "qc_2", name: "Ali", phone: null, email: "ali@example.com", trusted: false },
   ];
   const syntheticCommands = ["به مامان پیامک بده بگو دیر میام", "send an email to Ali saying the report is ready"];
   for (const command of syntheticCommands) {
@@ -497,6 +497,11 @@ async function main() {
       } else if (intent.action && intent.action !== "call") {
         const url = buildActionUrl(intent.action, contact, intent.message, intent.subject);
         console.log(`    Would open (never auto-send): ${url}`);
+        console.log(
+          contact.trusted
+            ? "    Contact is trusted -> the app's own confirmation card is skipped; the composer still opens and the OS's own send tap is still required."
+            : "    Contact is not trusted -> the app asks 'do you want me to open this?' before opening the composer."
+        );
       }
     }
   }

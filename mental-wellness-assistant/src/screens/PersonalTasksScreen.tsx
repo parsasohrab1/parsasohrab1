@@ -23,7 +23,7 @@ const ACTION_LABEL: Record<PersonalTaskAction, { fa: string; en: string }> = {
 
 export default function PersonalTasksScreen({}: Props) {
   const { locale, voiceEnabled } = useSession();
-  const { contacts, loaded, addContact, removeContact } = useQuickContacts();
+  const { contacts, loaded, addContact, removeContact, toggleTrusted } = useQuickContacts();
 
   const [command, setCommand] = useState("");
   const [listening, setListening] = useState(false);
@@ -54,12 +54,25 @@ export default function PersonalTasksScreen({}: Props) {
 
   const runCommand = (text: string) => {
     const parsed = parseIntent(text);
-    setIntent(parsed);
     const contact = resolveContact(parsed.contactName, contacts);
+    const message = parsed.message ?? "";
+    setIntent(parsed);
     setSelectedContact(contact);
-    setMessageDraft(parsed.message ?? "");
+    setMessageDraft(message);
     setConfirmed(false);
     setStatusText(null);
+
+    // A trusted contact + a command that already fully specifies the
+    // action skips the app's own confirmation card entirely — the
+    // native composer/dialer still opens and the OS's own send/call
+    // tap is still required there. See the "trusted" note on
+    // QuickContact and DISCLAIMERS.personalTasksLimitations.
+    if (contact?.trusted && parsed.action) {
+      const missing = missingInfoFor({ ...parsed, message: message || null }, contact);
+      if (missing.length === 0) {
+        void performAction(parsed.action, contact, message, parsed.subject);
+      }
+    }
   };
 
   const startListening = async () => {
@@ -84,28 +97,34 @@ export default function PersonalTasksScreen({}: Props) {
   const missing = intent && selectedContact ? missingInfoFor({ ...intent, message: messageDraft || null }, selectedContact) : null;
   const readyToConfirm = intent?.action && selectedContact && (missing?.length ?? 1) === 0;
 
-  const confirmAndAct = async () => {
-    if (!intent?.action || !selectedContact) return;
+  /** Actually opens the native composer/dialer. Takes explicit
+   *  arguments (rather than reading component state) so it can be
+   *  called either from the confirm button or, for a trusted contact,
+   *  directly from runCommand with freshly parsed values. Never sends
+   *  or calls by itself — Linking.openURL/SMS.sendSMSAsync here only
+   *  open the OS's own app; the user's own tap inside it is still the
+   *  final step. */
+  const performAction = async (action: PersonalTaskAction, contact: QuickContact, message: string, subject: string | null) => {
     setConfirmed(true);
-    const actionLabel = ACTION_LABEL[intent.action][locale];
+    const actionLabel = ACTION_LABEL[action][locale];
     say(
       locale === "fa"
-        ? `باشه، برنامهٔ ${actionLabel} رو برای ${selectedContact.name} باز می‌کنم. ارسال نهایی با خودته.`
-        : `Okay, opening ${actionLabel} for ${selectedContact.name}. The final send is up to you.`
+        ? `باشه، برنامهٔ ${actionLabel} رو برای ${contact.name} باز می‌کنم. ارسال نهایی با خودته.`
+        : `Okay, opening ${actionLabel} for ${contact.name}. The final send is up to you.`
     );
 
-    if (intent.action === "call") {
-      if (!selectedContact.phone) return;
-      await Linking.openURL(`tel:${selectedContact.phone}`).catch(() => setStatusText("unavailable"));
+    if (action === "call") {
+      if (!contact.phone) return;
+      await Linking.openURL(`tel:${contact.phone}`).catch(() => setStatusText("unavailable"));
       setStatusText("opened");
       return;
     }
 
-    if (intent.action === "sms" && selectedContact.phone) {
+    if (action === "sms" && contact.phone) {
       try {
         const available = await SMS.isAvailableAsync();
         if (available) {
-          await SMS.sendSMSAsync([selectedContact.phone], messageDraft);
+          await SMS.sendSMSAsync([contact.phone], message);
           setStatusText("opened");
           return;
         }
@@ -114,13 +133,18 @@ export default function PersonalTasksScreen({}: Props) {
       }
     }
 
-    const url = buildActionUrl(intent.action, selectedContact, messageDraft || null, intent.subject);
+    const url = buildActionUrl(action, contact, message || null, subject);
     if (!url) {
       setStatusText("unavailable");
       return;
     }
     await Linking.openURL(url).catch(() => setStatusText("unavailable"));
     setStatusText("opened");
+  };
+
+  const confirmAndAct = () => {
+    if (!intent?.action || !selectedContact) return;
+    void performAction(intent.action, selectedContact, messageDraft, intent.subject);
   };
 
   const saveContact = () => {
@@ -149,11 +173,19 @@ export default function PersonalTasksScreen({}: Props) {
               {c.phone ? ` · ${c.phone}` : ""}
               {c.email ? ` · ${c.email}` : ""}
             </Text>
+            <Pressable onPress={() => toggleTrusted(c.id)}>
+              <Text style={c.trusted ? styles.trustedText : styles.notTrustedText}>{c.trusted ? "⭐ مورد اعتماد" : "مورد اعتماد کن"}</Text>
+            </Pressable>
             <Pressable onPress={() => removeContact(c.id)}>
               <Text style={styles.removeText}>حذف</Text>
             </Pressable>
           </View>
         ))}
+        {contacts.some((c) => c.trusted) && (
+          <Text style={styles.emptyText}>
+            برای مخاطبین «مورد اعتماد»، وقتی فرمان کامل باشد (کار + مخاطب + متن)، بدون سؤال تأیید، مستقیم برنامهٔ مربوطه باز می‌شود.
+          </Text>
+        )}
 
         {!contactFormOpen ? (
           <Pressable style={styles.secondaryButton} onPress={() => setContactFormOpen(true)}>
@@ -250,12 +282,16 @@ export default function PersonalTasksScreen({}: Props) {
           {readyToConfirm && !confirmed && (
             <View style={styles.confirmBox}>
               <Text style={styles.confirmText}>
-                {locale === "fa"
-                  ? `آیا اجازه می‌دی برنامهٔ ${ACTION_LABEL[intent.action!][locale]} رو برای ${selectedContact!.name} با این محتوا باز کنم؟ (ارسال نهایی همیشه با خودته)`
-                  : `Do you want me to open ${ACTION_LABEL[intent.action!][locale]} for ${selectedContact!.name} with this content? (the final send is always yours)`}
+                {selectedContact!.trusted
+                  ? locale === "fa"
+                    ? `${selectedContact!.name} مورد اعتماده — فقط دکمه رو بزن تا ${ACTION_LABEL[intent.action!][locale]} باز شه.`
+                    : `${selectedContact!.name} is trusted — just tap to open ${ACTION_LABEL[intent.action!][locale]}.`
+                  : locale === "fa"
+                    ? `آیا اجازه می‌دی برنامهٔ ${ACTION_LABEL[intent.action!][locale]} رو برای ${selectedContact!.name} با این محتوا باز کنم؟ (ارسال نهایی همیشه با خودته)`
+                    : `Do you want me to open ${ACTION_LABEL[intent.action!][locale]} for ${selectedContact!.name} with this content? (the final send is always yours)`}
               </Text>
               <Pressable style={styles.primaryButton} onPress={confirmAndAct}>
-                <Text style={styles.primaryButtonText}>بله، باز کن</Text>
+                <Text style={styles.primaryButtonText}>{selectedContact!.trusted ? "انجام بده" : "بله، باز کن"}</Text>
               </Pressable>
             </View>
           )}
@@ -281,6 +317,8 @@ const styles = StyleSheet.create({
   contactRow: { flexDirection: "row", justifyContent: "space-between", alignItems: "center", paddingVertical: 4 },
   contactText: { color: "#e2e8f0", fontSize: 13, textAlign: "right", flex: 1 },
   removeText: { color: "#f87171", fontSize: 12, marginStart: 8 },
+  trustedText: { color: "#facc15", fontSize: 12, marginStart: 8, fontWeight: "600" },
+  notTrustedText: { color: "#64748b", fontSize: 12, marginStart: 8 },
   inputRow: { flexDirection: "row", alignItems: "center", gap: 8 },
   input: {
     flex: 1,

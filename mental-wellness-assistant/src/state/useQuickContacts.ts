@@ -17,7 +17,12 @@ export function useQuickContacts() {
     (async () => {
       try {
         const raw = await AsyncStorage.getItem(STORAGE_KEY);
-        if (raw) setContacts(JSON.parse(raw));
+        if (raw) {
+          // Contacts saved before the "trusted" flag existed lack it at
+          // runtime even though the type now requires it — normalize on load.
+          const parsed: (Omit<QuickContact, "trusted"> & Partial<Pick<QuickContact, "trusted">>)[] = JSON.parse(raw);
+          setContacts(parsed.map((c) => ({ ...c, trusted: c.trusted ?? false })));
+        }
       } catch {
         // Falls back to an empty list.
       } finally {
@@ -39,7 +44,13 @@ export function useQuickContacts() {
     (name: string, phone: string | null, email: string | null) => {
       const trimmed = name.trim();
       if (!trimmed) return;
-      const contact: QuickContact = { id: makeId(), name: trimmed, phone: phone?.trim() || null, email: email?.trim() || null };
+      const contact: QuickContact = {
+        id: makeId(),
+        name: trimmed,
+        phone: phone?.trim() || null,
+        email: email?.trim() || null,
+        trusted: false,
+      };
       persist([...contacts, contact]);
     },
     [contacts, persist]
@@ -52,5 +63,12 @@ export function useQuickContacts() {
     [contacts, persist]
   );
 
-  return { contacts, loaded, addContact, removeContact };
+  const toggleTrusted = useCallback(
+    (id: string) => {
+      persist(contacts.map((c) => (c.id === id ? { ...c, trusted: !c.trusted } : c)));
+    },
+    [contacts, persist]
+  );
+
+  return { contacts, loaded, addContact, removeContact, toggleTrusted };
 }

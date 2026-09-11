@@ -58,8 +58,8 @@ describe("parseIntent", () => {
 
 describe("resolveContact", () => {
   const contacts: QuickContact[] = [
-    { id: "1", name: "مامان", phone: "0912", email: null },
-    { id: "2", name: "Ali", phone: null, email: "ali@example.com" },
+    { id: "1", name: "مامان", phone: "0912", email: null, trusted: false },
+    { id: "2", name: "Ali", phone: null, email: "ali@example.com", trusted: false },
   ];
 
   it("matches a saved contact case-insensitively", () => {
@@ -74,7 +74,7 @@ describe("resolveContact", () => {
 });
 
 describe("missingInfoFor", () => {
-  const contactWithPhoneOnly: QuickContact = { id: "1", name: "مامان", phone: "0912", email: null };
+  const contactWithPhoneOnly: QuickContact = { id: "1", name: "مامان", phone: "0912", email: null, trusted: false };
 
   it("flags a missing contact first, ignoring other gaps", () => {
     const missing = missingInfoFor({ action: "sms", contactName: "x", message: "hi", subject: null }, null);
@@ -100,7 +100,7 @@ describe("missingInfoFor", () => {
 });
 
 describe("buildActionUrl", () => {
-  const contact: QuickContact = { id: "1", name: "Mom", phone: "+15551234567", email: "mom@example.com" };
+  const contact: QuickContact = { id: "1", name: "Mom", phone: "+15551234567", email: "mom@example.com", trusted: false };
 
   it("builds a mailto: URL with encoded subject and body", () => {
     const url = buildActionUrl("email", contact, "I'll be late", "Update");
@@ -131,7 +131,7 @@ describe("buildActionUrl", () => {
 
 describe("realAutomationStub", () => {
   it("throws instead of pretending to actually send/call", async () => {
-    const contact: QuickContact = { id: "1", name: "Mom", phone: "123", email: "mom@example.com" };
+    const contact: QuickContact = { id: "1", name: "Mom", phone: "123", email: "mom@example.com", trusted: false };
     await expect(realAutomationStub.execute("email", contact, "hi", null)).rejects.toThrow();
   });
 });

@@ -7,6 +7,7 @@ import { FeedbackModule } from './feedback/feedback.module';
 import { RiskModule } from './risk/risk.module';
 import { TechniqueModule } from './technique/technique.module';
 import { BodyConditionModule } from './body-condition/body-condition.module';
+import { PaymentsModule } from './payments/payments.module';
 
 @Module({
   imports: [
@@ -17,6 +18,7 @@ import { BodyConditionModule } from './body-condition/body-condition.module';
     RiskModule,
     TechniqueModule,
     BodyConditionModule,
+    PaymentsModule,
   ],
   controllers: [AppController],
 })

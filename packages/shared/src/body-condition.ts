@@ -28,6 +28,22 @@ export function estimateWeight(heartGirth: number, bodyLength: number, unit: Wei
   return Math.round((heartGirth * heartGirth * bodyLength) / 11900);
 }
 
+/**
+ * Equine BMI = weight(kg) / withers-height(m)^2 — the same formula as human BMI,
+ * adapted to the horse's withers height. Real, published in veterinary research
+ * (e.g. post-colic-surgery incisional-complication risk correlates with a higher
+ * BMI), but unlike Henneke BCS below it has no single, universally standardized
+ * "ideal range" — treat it as a supplementary research-style index, not the basis
+ * for care-plan decisions. Typical adult riding horses land roughly in the
+ * 170-230 kg/m^2 range, nothing like the human 18.5-25 scale.
+ */
+export function estimateBmi(weightKg: number, withersHeightM: number): number {
+  if (weightKg <= 0 || withersHeightM <= 0) {
+    throw new Error('weightKg and withersHeightM must be positive measurements');
+  }
+  return Math.round((weightKg / (withersHeightM * withersHeightM)) * 10) / 10;
+}
+
 /** Henneke 1–9 scale: 1 = extremely emaciated, 9 = extremely fat. Ideal range for most horses is 4–6. */
 export type HennekeScore = 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9;
 

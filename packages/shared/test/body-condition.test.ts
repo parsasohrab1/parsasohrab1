@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { categorizeBcs, estimateBcsFromChecklist, estimateWeight, getCarePlan } from '../src/body-condition';
+import { categorizeBcs, estimateBcsFromChecklist, estimateBmi, estimateWeight, getCarePlan } from '../src/body-condition';
 
 describe('estimateWeight', () => {
   it('matches the standard imperial weight-tape formula (girth^2 x length / 330)', () => {
@@ -17,6 +17,18 @@ describe('estimateWeight', () => {
   it('rejects non-positive measurements', () => {
     expect(() => estimateWeight(0, 100)).toThrow();
     expect(() => estimateWeight(100, -5)).toThrow();
+  });
+});
+
+describe('estimateBmi', () => {
+  it('matches weight / withersHeight^2, in the plausible equine range (not the human 18.5-25 scale)', () => {
+    // 480kg horse, 1.6m withers height -> 480 / 2.56 = 187.5
+    expect(estimateBmi(480, 1.6)).toBe(187.5);
+  });
+
+  it('rejects non-positive measurements', () => {
+    expect(() => estimateBmi(0, 1.6)).toThrow();
+    expect(() => estimateBmi(480, 0)).toThrow();
   });
 });
 

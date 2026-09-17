@@ -11,6 +11,7 @@ const LINKS = [
   { href: '/education', label: 'آموزش‌ها' },
   { href: '/technique', label: 'اصلاح تکنیک' },
   { href: '/body-condition', label: 'وزن و رژیم' },
+  { href: '/payments', label: 'پرداخت' },
   { href: '/archive', label: 'آرشیو ویدیو' },
   { href: '/news', label: 'اخبار' },
   { href: '/demo', label: 'دموی محصول' },

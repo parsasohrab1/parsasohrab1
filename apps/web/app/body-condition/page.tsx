@@ -8,6 +8,7 @@ const API_BASE = process.env.NEXT_PUBLIC_API_URL ?? 'http://localhost:3000';
 export default function BodyConditionPage() {
   const [heartGirth, setHeartGirth] = useState(180);
   const [bodyLength, setBodyLength] = useState(185);
+  const [withersHeight, setWithersHeight] = useState(160);
   const [discipline, setDiscipline] = useState<'jumping' | 'dressage'>('jumping');
   const [checklist, setChecklist] = useState<HennekeChecklistAnswers>({
     ribsVisible: 'not_visible_easily_felt',
@@ -15,7 +16,7 @@ export default function BodyConditionPage() {
     tailheadFat: 'can_feel_bones',
     withersShoulder: 'defined',
   });
-  const [result, setResult] = useState<{ weight: number; bcs: number; carePlan: CarePlan } | null>(null);
+  const [result, setResult] = useState<{ weight: number; bcs: number; bmi?: number; carePlan: CarePlan } | null>(null);
   const [error, setError] = useState('');
 
   async function handleSubmit(e: React.FormEvent) {
@@ -25,7 +26,7 @@ export default function BodyConditionPage() {
       const res = await fetch(`${API_BASE}/v1/body-condition/estimate`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ heartGirth, bodyLength, unit: 'metric', checklist, discipline }),
+        body: JSON.stringify({ heartGirth, bodyLength, withersHeight, unit: 'metric', checklist, discipline }),
       });
       if (!res.ok) throw new Error();
       setResult(await res.json());
@@ -56,6 +57,10 @@ export default function BodyConditionPage() {
         <div className="field">
           <label>طول بدن (نوک شانه تا نوک نشیمنگاه) — سانتی‌متر</label>
           <input type="number" value={bodyLength} onChange={(e) => setBodyLength(Number(e.target.value))} />
+        </div>
+        <div className="field">
+          <label>ارتفاع جدوگاه (Withers Height) — سانتی‌متر</label>
+          <input type="number" value={withersHeight} onChange={(e) => setWithersHeight(Number(e.target.value))} />
         </div>
         <div className="field">
           <label>رشته</label>
@@ -133,6 +138,15 @@ export default function BodyConditionPage() {
             </p>
             <p>{result.carePlan.category === 'ideal' ? 'وضعیت ایده‌آل' : result.carePlan.category === 'underweight' ? 'کمبود وزن' : 'اضافه وزن'}</p>
           </div>
+          {result.bmi !== undefined && (
+            <div className="card">
+              <h4>BMI (وزن ÷ ارتفاع جدوگاه²)</h4>
+              <p className="num" style={{ fontSize: 22, fontWeight: 700 }}>
+                {result.bmi} kg/m²
+              </p>
+              <p>مقیاس اسبی است، قابل‌مقایسه با BMI انسانی (۱۸.۵–۲۵) نیست؛ فقط یک شاخص تحقیقاتی مکمل BCS است، نه معیار اصلی تصمیم‌گیری تغذیه.</p>
+            </div>
+          )}
           <div className="card">
             <h4>تغذیه</h4>
             <p>{result.carePlan.diet}</p>

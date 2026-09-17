@@ -1,24 +1,55 @@
-👋 Hi, I’m @parsasohrab1
+# اسبان (Asbaan)
 
-👀 Welcome to My GitHub Profile
-I hold a B.Sc. and M.Sc. in Petroleum Engineering and a DBA in Professional Business Administration. 
-Driven by my passion for Artificial Intelligence (AI) and my academic background, I actively work on
-integrating AI technologies into the oil and gas industry to enhance efficiency and innovation.
+پلتفرم جامع خدمات و سلامت سوارکاری — رزرو دامپزشک/نعلبند/فروشگاه، آموزش رشته‌های سوارکاری،
+اصلاح تکنیک با ویدیو، تخمین وزن و BCS اسب، و هشدار زودهنگام کولیک/لمینایتیس/آزوتوریا از طریق
+دستگاه پوشیدنی **اسبان‌پالس**.
 
-📫 How to Contact Me: [oil.ms.sohrabi@gmail.com]
+این ریپو یک مونوریپوی واقعی و قابل‌اجراست، نه صرفاً مستندات طراحی. هر بخش زیر build/test شده است.
 
-🌱 Current AI-Based Projects & Products:
-      Smart Drilling Automation
-      Intelligent Well Damage Control Software
-      Smart Exploration Software
-      AI-Based Enhanced Oil Recovery (EOR) Software
-      Digital Twins for Gas Turbines
-These tools leverage AI to optimize operations, reduce risks, and improve decision-making in the energy sector.
+## ساختار
 
-💞️ If you’re interested in collaborating on AI applications for oil and gas or have related projects, feel free to reach out! I’d be happy to connect and explore synergies.
+```
+packages/shared/    منطق مشترک: انواع TypeScript، موتور ریسک‌اسکورینگ سه‌بیماری،
+                     ماژول بازخورد تکنیک، تخمین وزن/BCS — همه با تست (vitest)
+apps/backend/        API با NestJS (مونولیت ماژولار): horses, bookings, reviews,
+                     feedback, telemetry+risk, technique, body-condition
+apps/web/             سایت با Next.js 14 (App Router): همه صفحات سایت اسبان
+apps/mobile/          اپ React Native (Expo): پرونده سلامت اسب + داشبورد ریسک زنده + SOS
+docs/PATENTABILITY_NOTES.md  یادداشت سابقه پتنت و بخش‌های کاندیدای نوآوری (نه مشاوره حقوقی)
+```
 
-⚧️ Pronouns:he/him
+## اجرا
 
-⚡ Fun fact: "I once trained an AI model to predict coffee quality—because even algorithms deserve a good brew! ☕"
+```bash
+npm install                 # نصب همه workspaceها از ریشه
 
+npm run test:shared         # تست موتور ریسک‌اسکورینگ، تکنیک، وزن/BCS
+npm run build:shared
 
+npm run dev:backend         # http://localhost:3000
+npm run dev:web             # http://localhost:3000 تداخل پورت دارد؛ PORT=3001 npm run dev:web
+npm run start:mobile        # Expo dev server (نیاز به Expo Go یا شبیه‌ساز)
+```
+
+وب و موبایل با `NEXT_PUBLIC_API_URL` / `EXPO_PUBLIC_API_URL` به بک‌اند وصل می‌شوند و در نبود آن
+به داده نمونه/موتور محلی برمی‌گردند — یعنی هرکدام به‌تنهایی هم قابل‌دمو هستند.
+
+## آنچه واقعی است و آنچه شبیه‌سازی‌شده (صادقانه)
+
+| بخش | وضعیت |
+|---|---|
+| موتور ریسک‌اسکورینگ (کولیک/لمینایتیس/آزوتوریا + قاعده تفکیک) | **واقعی** — منطق کامل با ۱۹ تست پوشش داده شده |
+| جریان هشدار SOS → دیسپچ خودکار رزرو | **واقعی** — از `POST /v1/telemetry/ingest` تا ایجاد booking اورژانسی |
+| تخمین وزن اسب (فرمول دور سینه × طول بدن) | **واقعی** — فرمول استاندارد صنعت، نه شبیه‌سازی |
+| تخمین BCS و برنامه تغذیه/تمرین | **واقعی به شکل چک‌لیست هدایت‌شده** (مقیاس Henneke)، نه بینایی کامپیوتر خودکار |
+| بازخورد ویدیویی تکنیک سوارکاری | **شبیه‌سازی‌شده عمداً** — نیاز به مدل pose-estimation دارد که ساخته نشده؛ کد و کامنت‌ها این را صریح اعلام می‌کنند |
+| ذخیره‌سازی داده (horses/bookings/reviews/...) | **درون‌حافظه‌ای (in-memory)** برای دمو — معماری واقعی (PostgreSQL/TimescaleDB/MQTT) در سند معماری پلتفرم توضیح داده شده و هنوز پیاده نشده |
+| اپ موبایل/وب | **واقعی و build-شده**، ولی بدون احراز هویت/پرداخت واقعی |
+
+## اسناد طراحی مرتبط (Artifact های قبلی این پروژه)
+BOM سخت‌افزار، مدار بند بیومتریک، طراحی موتور ریسک، و معماری پلتفرم — هرکدام در گفت‌وگوی
+پروژه به‌صورت سند جداگانه ساخته شده‌اند و این ریپو پیاده‌سازی همان طراحی‌هاست.
+
+## مالکیت فکری
+پیش از هرگونه ادعای پتنت یا انتشار عمومی، `docs/PATENTABILITY_NOTES.md` را بخوانید — شامل
+سابقه پتنت‌های مرتبط یافته‌شده و بخش‌هایی از کد که به‌عنوان کاندیدای نوآوری علامت‌گذاری شده‌اند.

@@ -1,0 +1,19 @@
+{
+  "name": "asbaan",
+  "private": true,
+  "version": "0.1.0",
+  "description": "Asbaan — equestrian services platform + Asbaan Pulse wearable health monitoring",
+  "workspaces": [
+    "packages/*",
+    "apps/*"
+  ],
+  "scripts": {
+    "test:shared": "npm run test --workspace=@asbaan/shared",
+    "build:shared": "npm run build --workspace=@asbaan/shared",
+    "dev:backend": "npm run start:dev --workspace=@asbaan/backend",
+    "build:backend": "npm run build --workspace=@asbaan/backend",
+    "dev:web": "npm run dev --workspace=@asbaan/web",
+    "build:web": "npm run build --workspace=@asbaan/web",
+    "start:mobile": "npm run start --workspace=@asbaan/mobile"
+  }
+}

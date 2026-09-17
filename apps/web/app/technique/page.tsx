@@ -1,10 +1,11 @@
 'use client';
 
 import { useState } from 'react';
-import type { CriterionFeedback, TechniqueDiscipline, VideoAnalysisResult } from '@asbaan/shared';
-import { TECHNIQUE_CRITERIA } from '@asbaan/shared';
+import type { CriterionFeedback, ReferenceCategory, TechniqueDiscipline, VideoAnalysisResult } from '@asbaan/shared';
+import { REFERENCE_CATEGORY_LABELS, TECHNIQUE_CRITERIA, TECHNIQUE_REFERENCE_LIBRARY } from '@asbaan/shared';
 
 const API_BASE = process.env.NEXT_PUBLIC_API_URL ?? 'http://localhost:3000';
+const REFERENCE_CATEGORIES = Object.keys(REFERENCE_CATEGORY_LABELS) as ReferenceCategory[];
 
 function verdictLabel(v: CriterionFeedback['verdict']) {
   if (v === 'correct') return { text: 'صحیح', cls: 'ok' };
@@ -18,6 +19,7 @@ export default function TechniquePage() {
   const [result, setResult] = useState<VideoAnalysisResult | null>(null);
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
+  const [refCategory, setRefCategory] = useState<ReferenceCategory>('walk');
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
@@ -55,6 +57,41 @@ export default function TechniquePage() {
         (deterministic) بر پایه معیارهای واقعی کوچینگ است تا رابط کاربری و ساختار بازخورد از هم‌اکنون قابل بررسی باشد.
       </div>
 
+      <h3 style={{ fontSize: 14.5, margin: '0 0 10px' }}>کتابخانه تکنیک ایده‌آل</h3>
+      <p className="lede">ویدیوهای مرجع واقعی برای هر گام و رشته — منبع مقایسه پیش از ارسال ویدیوی خودتان.</p>
+      <div className="subtabs">
+        {REFERENCE_CATEGORIES.map((cat) => (
+          <a
+            key={cat}
+            className={refCategory === cat ? 'active' : ''}
+            onClick={() => setRefCategory(cat)}
+            style={{ cursor: 'pointer' }}
+          >
+            {REFERENCE_CATEGORY_LABELS[cat]}
+          </a>
+        ))}
+      </div>
+      <div className="film-grid" style={{ marginBlockEnd: 28 }}>
+        {TECHNIQUE_REFERENCE_LIBRARY.filter((v) => v.category === refCategory).map((v) => (
+          <a className="film-card" key={v.id} href={v.url} target="_blank" rel="noopener noreferrer">
+            <div className="film-poster" style={{ padding: 0, overflow: 'hidden' }}>
+              {v.thumbnailUrl ? (
+                // eslint-disable-next-line @next/next/no-img-element
+                <img src={v.thumbnailUrl} alt={v.title} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+              ) : (
+                '🎬'
+              )}
+            </div>
+            <div className="film-body">
+              <h4>{v.title}</h4>
+              <span>{v.sourceLabel}</span>
+              <p style={{ marginTop: 6, fontSize: 11.5, color: 'var(--text-muted)' }}>{v.descriptionFa}</p>
+            </div>
+          </a>
+        ))}
+      </div>
+
+      <h3 style={{ fontSize: 14.5, margin: '0 0 10px' }}>ارسال ویدیوی خودتان برای بازخورد</h3>
       <form className="card" style={{ maxWidth: 520, marginBlockEnd: 24 }} onSubmit={handleSubmit}>
         <div className="field">
           <label>رشته</label>

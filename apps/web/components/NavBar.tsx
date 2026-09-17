@@ -6,10 +6,14 @@ import { Logo } from './Logo';
 
 const LINKS = [
   { href: '/', label: 'خانه' },
+  { href: '/register', label: 'ثبت‌نام / ورود' },
   { href: '/download', label: 'دانلود' },
   { href: '/reviews', label: 'نظرات کاربران' },
   { href: '/education', label: 'آموزش‌ها' },
   { href: '/technique', label: 'اصلاح تکنیک' },
+  { href: '/breeds', label: 'نژادهای اسب' },
+  { href: '/stallions', label: 'سیلمی جهت کشش' },
+  { href: '/loyalty', label: 'باشگاه مشتریان' },
   { href: '/body-condition', label: 'وزن و رژیم' },
   { href: '/payments', label: 'پرداخت' },
   { href: '/archive', label: 'آرشیو ویدیو' },

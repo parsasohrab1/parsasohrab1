@@ -58,6 +58,10 @@ export interface Horse {
   breed?: string;
   ageYears?: number;
   discipline?: 'jumping' | 'dressage' | 'eventing' | 'racing' | 'archery' | 'general';
+  /** Pedigree/import facts and the full chain of ownership — see horse-history.ts.
+   * Populated over time through community HorseContribution submissions. */
+  pedigree?: import('./horse-history').HorsePedigree;
+  ownershipHistory?: import('./horse-history').OwnershipRecord[];
 }
 
 export interface Booking {

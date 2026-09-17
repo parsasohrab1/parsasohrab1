@@ -1,5 +1,5 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
-import { Horse } from '@asbaan/shared';
+import { Horse, HorsePedigree, OwnershipRecord } from '@asbaan/shared';
 import { randomUUID } from 'crypto';
 
 @Injectable()
@@ -23,6 +23,19 @@ export class HorsesService {
   create(input: Omit<Horse, 'id'>): Horse {
     const horse: Horse = { id: randomUUID(), ...input };
     this.horses.push(horse);
+    return horse;
+  }
+
+  /** Applied by ContributionsService once a community-submitted history fact is approved. */
+  setPedigree(horseId: string, pedigree: HorsePedigree): Horse {
+    const horse = this.findOne(horseId);
+    horse.pedigree = pedigree;
+    return horse;
+  }
+
+  addOwnershipRecord(horseId: string, record: OwnershipRecord): Horse {
+    const horse = this.findOne(horseId);
+    horse.ownershipHistory = [...(horse.ownershipHistory ?? []), record];
     return horse;
   }
 }

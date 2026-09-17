@@ -1,24 +1,70 @@
-👋 Hi, I’m @parsasohrab1
+# اسبان (Asbaan)
 
-👀 Welcome to My GitHub Profile
-I hold a B.Sc. and M.Sc. in Petroleum Engineering and a DBA in Professional Business Administration. 
-Driven by my passion for Artificial Intelligence (AI) and my academic background, I actively work on
-integrating AI technologies into the oil and gas industry to enhance efficiency and innovation.
+پلتفرم جامع خدمات و سلامت سوارکاری — ثبت‌نام چندنقشی (سوارکار/رایدر/مربی/دامپزشک/نعلبند/
+اسب‌کش/مدیر باشگاه)، پرونده و پدیگری اسب با مشارکت کاربران، باشگاه مشتریان با امتیاز و جایزه،
+نژادهای اسب، سیلمی جهت کشش، رزرو دامپزشک/نعلبند/فروشگاه، آموزش رشته‌های سوارکاری با کتابخانه
+ویدیوی تکنیک ایده‌آل، تخمین وزن/BCS/BMI اسب، پرداخت آنلاین، و هشدار زودهنگام
+کولیک/لمینایتیس/آزوتوریا از طریق دستگاه پوشیدنی **اسبان‌پالس**.
 
-📫 How to Contact Me: [oil.ms.sohrabi@gmail.com]
+این ریپو یک مونوریپوی واقعی و قابل‌اجراست، نه صرفاً مستندات طراحی. هر بخش زیر build/test شده است.
 
-🌱 Current AI-Based Projects & Products:
-      Smart Drilling Automation
-      Intelligent Well Damage Control Software
-      Smart Exploration Software
-      AI-Based Enhanced Oil Recovery (EOR) Software
-      Digital Twins for Gas Turbines
-These tools leverage AI to optimize operations, reduce risks, and improve decision-making in the energy sector.
+## ساختار
 
-💞️ If you’re interested in collaborating on AI applications for oil and gas or have related projects, feel free to reach out! I’d be happy to connect and explore synergies.
+```
+packages/shared/    منطق مشترک: انواع TypeScript، موتور ریسک‌اسکورینگ سه‌بیماری،
+                     ماژول بازخورد تکنیک، تخمین وزن/BCS/BMI — همه با تست (vitest)
+apps/backend/        API با NestJS (مونولیت ماژولار): auth/users, horses, bookings,
+                     reviews, feedback, telemetry+risk, technique, body-condition,
+                     payments, contributions (اسب+کاربر), loyalty, wiki-summary,
+                     breeds, stallions
+apps/web/             سایت با Next.js 14 (App Router): همه صفحات سایت اسبان
+apps/mobile/          اپ React Native (Expo): پرونده سلامت اسب + داشبورد ریسک زنده + SOS
+docs/PATENTABILITY_NOTES.md  یادداشت سابقه پتنت و بخش‌های کاندیدای نوآوری (نه مشاوره حقوقی)
+```
 
-⚧️ Pronouns:he/him
+## اجرا
 
-⚡ Fun fact: "I once trained an AI model to predict coffee quality—because even algorithms deserve a good brew! ☕"
+```bash
+npm install                 # نصب همه workspaceها از ریشه
 
+npm run test:shared         # تست موتور ریسک‌اسکورینگ، تکنیک، وزن/BCS/BMI
+npm run build:shared
 
+npm run dev:backend         # http://localhost:3000
+# پرداخت به‌طور پیش‌فرض از درگاه mock استفاده می‌کند؛ برای زرین‌پال واقعی:
+# ZARINPAL_MERCHANT_ID=xxx ZARINPAL_SANDBOX=true npm run dev:backend
+npm run dev:web             # http://localhost:3000 تداخل پورت دارد؛ PORT=3001 npm run dev:web
+npm run start:mobile        # Expo dev server (نیاز به Expo Go یا شبیه‌ساز)
+```
+
+وب و موبایل با `NEXT_PUBLIC_API_URL` / `EXPO_PUBLIC_API_URL` به بک‌اند وصل می‌شوند و در نبود آن
+به داده نمونه/موتور محلی برمی‌گردند — یعنی هرکدام به‌تنهایی هم قابل‌دمو هستند.
+
+## آنچه واقعی است و آنچه شبیه‌سازی‌شده (صادقانه)
+
+| بخش | وضعیت |
+|---|---|
+| موتور ریسک‌اسکورینگ (کولیک/لمینایتیس/آزوتوریا + قاعده تفکیک) | **واقعی** — منطق کامل با ۱۹ تست پوشش داده شده |
+| جریان هشدار SOS → دیسپچ خودکار رزرو | **واقعی** — از `POST /v1/telemetry/ingest` تا ایجاد booking اورژانسی |
+| تخمین وزن اسب (فرمول دور سینه × طول بدن) | **واقعی** — فرمول استاندارد صنعت، نه شبیه‌سازی |
+| BMI اسبی (وزن ÷ ارتفاع جدوگاه²) | **واقعی** — همان فرمول انسانی روی ارتفاع جدوگاه؛ بدون بازه ایده‌آل استاندارد (برخلاف BCS)، فقط شاخص مکمل |
+| تخمین BCS و برنامه تغذیه/تمرین | **واقعی به شکل چک‌لیست هدایت‌شده** (مقیاس Henneke)، نه بینایی کامپیوتر خودکار |
+| بازخورد ویدیویی تکنیک سوارکاری | **شبیه‌سازی‌شده عمداً** — نیاز به مدل pose-estimation دارد که ساخته نشده؛ کد و کامنت‌ها این را صریح اعلام می‌کنند |
+| پرداخت (ZarinPal) | **واقعی از نظر قرارداد API** (request/verify مطابق مستندات رسمی)؛ بدون `ZARINPAL_MERCHANT_ID` به‌صورت خودکار به درگاه mock سوییچ می‌کند — چرخه کامل create→callback→verify با curl تست شده |
+| احراز هویت (ثبت‌نام/ورود چندنقشی) | **واقعی** — رمز عبور با `scrypt` هش می‌شود، sessionهای bearer-token؛ برای production باید JWT+refresh و ذخیره‌سازی پایدار جایگزین شود |
+| مشارکت کاربران در پدیگری/تاریخچه اسب و پروفایل اعضا | **واقعی** — یک مکانیزم عمومی `Contribution` (نه دو تای جدا) برای هر دو نوع موجودیت؛ تأیید = اعمال تغییر + اعطای امتیاز، تست‌شده end-to-end با curl |
+| باشگاه مشتریان (امتیاز + جایزه) | **واقعی** — ۱۰ امتیاز به ازای هر مشارکت تأییدشده؛ کاتالوگ جایزه شامل «بسته ۲ کیلویی کنسانتره طعم‌دار» |
+| نژادهای اسب | **متن واقعی، تصویر زنده** — ۲۵ نژاد (شامل نژادهای ایرانی: کاسپین، ترکمن، دره‌شوری، کرد) با تصویر گرفته‌شده لحظه‌ای از Wikipedia REST API — نه فهرست کامل ۳۰۰+ نژاد جهانی و نه URL تصویر حدسی |
+| کتابخانه ویدیوی تکنیک ایده‌آل (قدم/یورتمه/چهارنعل/پرش/دراساژ/ایونتینگ/کورس/کمان‌سواری) | **واقعی** — لینک‌های واقعی و بررسی‌شده YouTube/فدراسیون، نه ساختگی |
+| سیلمی جهت کشش | **ساختار و دایرکتوری واقعی، داده نمونه** — اطلاعات مالکان واقعی سیلمی‌های ایران عمداً جمع‌آوری و منتشر نشد (نام و قیمت افراد واقعی بدون رضایتشان)؛ مالکان واقعی از طریق ثبت‌نام خودشان آگهی می‌گذارند |
+| `wiki-summary` proxy (تصویر نژادها) | **کد واقعی و صحیح**، ولی در این محیط sandbox به‌دلیل محدودیت شبکه (`en.wikipedia.org` توسط policy این نشست مسدود است) امکان تست کامل زنده نبود؛ در استقرار واقعی با دسترسی اینترنت معمولی کار می‌کند |
+| ذخیره‌سازی داده (همه ماژول‌ها) | **درون‌حافظه‌ای (in-memory)** برای دمو — معماری واقعی (PostgreSQL/TimescaleDB/MQTT) در سند معماری پلتفرم توضیح داده شده و هنوز پیاده نشده |
+| اپ موبایل/وب | **واقعی و build-شده** |
+
+## اسناد طراحی مرتبط (Artifact های قبلی این پروژه)
+BOM سخت‌افزار، مدار بند بیومتریک، طراحی موتور ریسک، و معماری پلتفرم — هرکدام در گفت‌وگوی
+پروژه به‌صورت سند جداگانه ساخته شده‌اند و این ریپو پیاده‌سازی همان طراحی‌هاست.
+
+## مالکیت فکری
+پیش از هرگونه ادعای پتنت یا انتشار عمومی، `docs/PATENTABILITY_NOTES.md` را بخوانید — شامل
+سابقه پتنت‌های مرتبط یافته‌شده و بخش‌هایی از کد که به‌عنوان کاندیدای نوآوری علامت‌گذاری شده‌اند.
